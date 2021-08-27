@@ -78,10 +78,18 @@ melt <- stack(melt_import)
 melt
 
 levelplot(melt)
+#sottrazione tra l'ultimo e il primo dato per ottenere il livello di scioglimento, il $ lega lo stack allo strato interno 
 
 melt_amount <- melt$X2007annual_melt - melt$X1979annual_melt
 
+#dal blu al rosso aumenta lo scioglimento
 clb <- colorRampPalette(c("blue","white","red"))(100)
 plot(melt_amount, col=clb)
 
 levelplot(melt_amount, col.regions=clb)
+
+#installo il pacchetto knitr
+install.packages("knitr")
+
+
+
