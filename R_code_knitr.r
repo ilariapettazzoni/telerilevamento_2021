@@ -2,5 +2,6 @@
 
 #R_code_knitr.r
 
-library(raster)
- setwd("/Users/ilari/Desktop/lab/")
+setwd("/Users/ilari/Desktop/lab/")
+library(knitr)
+
