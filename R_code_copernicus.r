@@ -24,3 +24,5 @@ library(RStoolbox)
 ext <- c(6, 20, 35, 50)
 testc <- crop(test, ext)
 plot(testc)
+
+
