@@ -2,6 +2,9 @@
 
 library(raster)
 #si può usare anche require(raster)
+install.packages("rasterdiv")
+#library(rasterdiv) # for the worldwide NDVI
+library (rasterdiv)
 setwd("/Users/ilari/Desktop/lab")
 
 defor1 <- brick("defor1.jpg")
@@ -69,3 +72,16 @@ plot(vi1, col=cl)
 
 vi2 <- spectralIndices(defor2, green = 3, red = 2, nir = 1)
 plot(vi2, col=cl)
+
+
+#LEZIONE 05/05/21
+# worldwide NDVI
+plot(copNDVI)
+
+
+# Pixels with values 253, 254 and 255 (water) will be set as NA’s.
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+plot(copNDVI)
+library (rasterVis)
+# rasterVis package needed:
+levelplot(copNDVI)
