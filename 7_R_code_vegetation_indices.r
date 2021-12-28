@@ -18,6 +18,7 @@ plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 defor1
 
 # difference vegetation index
+#Il DVI è la differenza tra la riflettanza nell’infrarosso vicino e quella nel rosso e può essere standardizzato sulla loro somma.
 
 # time 1
 #NIR-Red
@@ -47,6 +48,9 @@ plot(difdvi, col=cld)
 
 
 # ndvi
+#C’è la possibilità di normalizzare l’indice: NDVI, Indice usato perché da info sulla salute della vegetazione. 
+#Normalizzare significa che  invece di fare solo infrarosso – rosso facciamo infrarosso – rosso\infrarosso + rosso. 
+
 # (NIR-RED) / (NIR+RED)
 ndvi1 <- (defor1$defor1.1 - defor1$defor1.2) / (defor1$defor1.1 + defor1$defor1.2)
 plot(ndvi1, col=cl)
