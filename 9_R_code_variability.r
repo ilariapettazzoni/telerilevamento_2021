@@ -69,6 +69,7 @@ plot(pc1sd5, col=clsd)
 # plot(pc1sd7)
 
 # With the source function you can upload code from outside!
+#Funzione source: permette di richiamare un pezzo di codice già creato. La funzione source permette di salvare il pezzo di codice e farlo partire. 
 source("source_test_lezione.r")
 source("source_ggplot.r")
 
@@ -78,6 +79,7 @@ p1 <- ggplot() +
 geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) +
 scale_fill_viridis()  +
 ggtitle("Standard deviation of PC1 by viridis colour scale")
+#Viridis, colori che possano percepire tutti, pacchetto che garantisce che tutte le legende siano blindfriendly rispetto ad alcune malattie della vista.
 
 p2 <- ggplot() +
 geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) +
@@ -89,4 +91,5 @@ geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) +
 scale_fill_viridis(option = "turbo")  +
 ggtitle("Standard deviation of PC1 by turbo colour scale")
 
+#grid.arrange:più grafici in una pagina. Deriva dalla libreria gridExtra. 
 grid.arrange(p1, p2, p3, nrow = 1)
