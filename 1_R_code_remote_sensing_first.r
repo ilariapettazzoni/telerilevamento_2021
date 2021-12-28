@@ -1,16 +1,29 @@
 # My first code in R for remote sensing!
 
+#Set della working directory: la cartella da cui estraggo i dati per il codice. Dipende dal sistema operativo, su windows es: setwd("C:/lab")
 setwd("/Users/ilari/Desktop/lab/")
 
-# nella lezione precedente install.packages("raster")
-
+#nella lezione precedente install.packages("raster")
+#Installare i pacchetti: mi permette di utilizzare le funzioni nei codici. install.packages(“raster”), utilizzo le virgolette perché sto uscendo da R. 
+#Dopo l’installazione, basta utilizzare la funzione library per richiamarli, senza virgolette perché sono già dentro R (li ho installati): library(raster). 
+#Le librerie vanno richiamate sempre all’inizio. 
 library(raster)
+
+#Importare i dati: funzione brick  brick(“nome immagine.estensione”), con virgolette perché esco ed entro da R. 
+#Se subito dopo scrivo il nome dell’immagine posso ottenere le varie info: numero di pixel, sistema di riferimento.
 p224r63_2011<-brick("p224r63_2011_masked.grd")
 p224r63_2011
 
+#Visualizzare l’immagine: posso plottarla. Funzione plot(nome dell’immagine). 
+#La funzione restituirà una scala di colore di defoult. 
 plot(p224r63_2011)
 
-#colour change
+#Colour change: per cambiare la scala posso scegliere una color diversa con la funzione colorRampPalette. 
+#Colori indicati come etichette tra virgolette. 
+#Per dire al software che si tratta di elementi dello stesso tipo devo racchiuderli in un oggetto, un vettore (array).
+#Li raggruppo in parentesi con davanti una c, saranno elementi uniti per rappresentare un argomento, il colore. 
+#L’argomento con il numero indica quanti livelli di ciascun colore voglio visualizzare. 
+#Associo sempre il tutto ad un oggetto (cl) così da facilitare l’utilizzo del codice, posso scrivere solo l’oggetto e non tutta la funzione. 
 cl <- colorRampPalette(c("black","grey","light grey")) (100)
 plot(p224r63_2011, col=cl)
 
