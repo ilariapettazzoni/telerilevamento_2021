@@ -31,11 +31,12 @@ plot(lst_2015)
 #uso la funzione lapply, ma prima creo la lista di file (list.files)a cui applicare la funzione raster
 #i file hanno in comune le lettere "lst" nel nome
  
-# list f files:
+# list f files: Mi serve qualcosa in comune a tutti i file della lista. Es “lst”. E’ il pattern, cioè una frase in comune
 rlist <- list.files(pattern="lst")
 rlist
 # R mi restituisce la lista dei file
 
+#Creo una lista di file di quella cartella che hanno in comune la parola lst. A questo punto li importo.
 #lapply(x,fan) con x=lista e fan=funzione da applicare
 import <- lapply(rlist,raster)
 import
@@ -43,6 +44,8 @@ import
 
 #ora impacchettiamo  file  con la funzione stack
 
+#funzione STACK per plottare tutte le immagini. Faccio un blocco di files tutti insieme. 
+#Raster stack per raggruppare file raster. Lo raggruppo in un file detto TGr. Stack mi passa dai singoli files ad un unico file grande. 
 TGr <- stack(import)
 TGr
 plot(TGr)
@@ -61,7 +64,10 @@ levelplot(TGr$lst_2000)
 #cambio colore
 #col.regions per levelplot
 cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
+
 #uso col.regions per levelplot
+#. Il levelplot è più potente di plot per output colori e mi permette di confrontare più facilmente, più compatto e potente.
+#Le coordinate sono solo sulla destra e sotto. I colori si vedono meglio. I titoli delle singole mappe sono i nomi dei vari livelli, possiamo anche cambiarli. 
 levelplot(TGr, col.regions=cl)
 
 #rinomino gli attributi
