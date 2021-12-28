@@ -3,6 +3,7 @@
 library(raster)
 library(RStoolbox) # classification
 # install.packages("ggplot2")
+#La libreria ggplot2  pacchetto che ha delle funzioni per plottare le immagini in modo più potente tramite funzioni facili. 
 library(ggplot2)
 # install.packages("gridExtra")
 library(gridExtra) # for grid.arrange plotting
@@ -10,6 +11,8 @@ library(gridExtra) # for grid.arrange plotting
 setwd("/Users/ilari/Desktop/lab")
 # NIR 1, RED 2, GREEN 3
 
+#L’immagine sentilen è già elaborata e formata da tre bande. 
+#Non posso importare con la funzione raster, importerebbe solo il primo livello. Utilizziamo la funzione brick, che porta nel software tutto il blocco. 
 defor1 <- brick("defor1.jpg")
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
