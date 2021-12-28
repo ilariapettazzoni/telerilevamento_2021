@@ -1,5 +1,8 @@
 # R_code_spectral_signatures.r
 
+#FIRME SPETTRALI  posso risalire al tipo di materiale o addirittura al tipo di pianta 
+#foglie molto diverse e presentano delle firme spettrali diverse, riflettono a lunghezze d’onda differenti. 
+
 library(raster)
 library(rgdal)
 
@@ -9,6 +12,7 @@ defor2 <- brick("defor2.jpg")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
 
+#La funzione click del pacchetto rgdal mi permette di ottenere informazioni cliccando su vari punti dell’immagine, in questo caso info sulla riflettanza. 
 defor2
 plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
 click(defor2, id=T, xy=T, cell=T, type="p", pch=16, cex=4, col="yellow")
