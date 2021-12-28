@@ -52,6 +52,7 @@ plot(p224r63_2011$B1_sre)
 cls <- colorRampPalette(c("orange","yellow","light green")) (200)
 plot(p224r63_2011$B1_sre, col=cls)
 
+#Funzione PAR per plottare più immagini insieme nello stesso grafico e creare un multiframe. Mi permette di creare un sistema di righe e colonne. 
 # 1 riga e 2 colonne
 par(mfrow=c(1,2))
 plot(p224r63_2011$B1_sre)
@@ -103,13 +104,19 @@ plot(p224r63_2011$B4_sre, col=cln)
 # B6: infrarosso termico
 # B7: infrarosso medio
 
+#Per ogni singola lunghezza d’onda abbiam uno specifico sensore. Se uso i sensori del blu, rosso e verde vedrò come l’occhio umano, nel sistema RGB. 
+#Monto le tre bande una sull’altra. 
+#La banda del verde nella componente green del nostro sistema. E così per le altre due. Secondo un ordine 3-2-1 (rosso, verde, blu).
+#Argomento stretch: prendo i valori delle singole mappe e le “tiro” un po’ per fare in modo che non ci sia un schiacciamento verso una sola parte del colore. 
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 
+# Montiamo la 4 che è l’infrarosso sulla componente red, la 3 che è il rosso sulla componente green e la 2 che è il verde sulla componente blu. 
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
+#Tutti gli oggetti che hanno alta riflettanza nella banda numero 4 assumeranno il colore della componente alla quale la banda numero 4 è stata associata.
 
 par(mfrow=c(2,2))
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
@@ -117,7 +124,10 @@ plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 
-#pdf
+#Funzione pdf
+#Siamo dentro R, vogliamo prendere il grafico, uscire e portarlo nella cartella che ci interessa. 
+#Se usciamo o entriamo in R usiamo sempre le virgolette, con il nome dentro. 
+
 pdf("il_mio_primo_pdf_con_R.pdf")
 par(mfrow=c(2,2))
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
