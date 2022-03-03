@@ -8,8 +8,8 @@ setwd("/Users/ilari/Desktop/lab/")
 library(knitr)
 
 # starting from the code folder where framed.sty is put!
-#è stitch  il primo argomento è come si chiama il codice, argomento 2 è il template che andiamo ad utilizzare (misc) 
-#e il file del template che si chiama knit template, argomento 3 è il nome del pacchetto da utilizzare (knitr)
+# stitch() il primo argomento è come si chiama il codice, argomento 2 è il template che andiamo ad utilizzare (misc) 
+# e il file del template che si chiama knit template, argomento 3 è il nome del pacchetto da utilizzare (knitr)
 require(knitr)
 stitch("R_code_greenland.tex", template=system.file("misc", "knitr-template.Rnw", package="knitr"))
 
