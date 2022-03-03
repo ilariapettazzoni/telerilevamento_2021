@@ -7,16 +7,26 @@ library(RStoolbox)
 
 setwd("/Users/ilari/Desktop/lab")
 
+#uso brick per caricare un set multiplo di dati
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 plot(p224r63_2011)
 p224r63_2011
+
 #plottiamo la banda 1 contro la banda 2
 plot(p224r63_2011$B1_sre, p224r63_2011$B2_sre, col="red", pch=19, cex=2)
+#plot(p224r63_2011$B1_sre, p224r63_2011$B2_sre)
+#l'ordine delle 2 bande dipende dall'ordine scritto nella funzione.
+#cambio colore e il carattere dei punti ed aumento la dimensione
+
 #le bande invertite invertono gli assi
 plot(p224r63_2011$B2_sre, p224r63_2011$B1_sre, col="red", pch=19, cex=2)
 
 #per plottare tutte le variabili possibili, mette in correlazione tutte le variabili a due a due del dataset
 pairs(p224r63_2011)
+#nella parte bassa della matrice troviamo i grafici con tutte le correlazioni, nella parte alta invece gli indici di correlazione di pearson.
+#se siamo positivamente correlate l'indice tende a 1, se lo siamo negativamente tende a -1.
+#grazie a pairs vediamo quanto molte bande siano correlate tra loro.
+
 
 #LEZIONE 28/04/21
 
@@ -45,9 +55,14 @@ plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="lin")
 #Raster PCA: principal component analysis for raster, prende il pachetto di dati e lo compatta in un numero minore di bande
 p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
 
-#Tramite la funzione summary posso ottenere un sommario del modello  posso capire in che percentuale le componenti sono rappresentative. 
+#Tramite la funzione summary posso ottenere un sommario del modello, posso capire in che percentuale le componenti sono rappresentative. 
 #chiediamo info sul modello, usiamo $model
 summary(p224r63_2011res_pca$model)
+#la funzione summary è una funzione del pacchetto di base che crea un sommario del modello (in questo caso)
+#dal risultato notiamo che la prima banda ha lo 0.998 della varianza totale, quindi quasi il totale della variabilità è contenuto in una banda sola.
+#per avere il 100% della variabilità ovviamento dobbiamo usare tutte le bande, ma non è il nostro scopo. noi vogliamo la max variabilità con il minimo delle bande.
+#anche nel plot delle immaini è così! nella banda 1 riusciamo a vedere tutto, foresta, zone agricole etc, nella banda 7 praticamente abbiamo solo rumore, un'immagine in cui è difficile distinguere le componenti.
+
 
 #Posso fare un plot RGB per inserire le prime tre componenti, quelle che riassumono di più la varaibilità. 
 plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
