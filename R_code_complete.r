@@ -13,6 +13,7 @@
 # 8 - R Code Vegetation Indices
 # 9 - R Code Land Cover
 # 10 - R Code Variability
+# 11 - R Code Spetral Signatures
 #-----------------------------------------------
 #_______________________________________________
 
@@ -331,6 +332,7 @@ rlist <- list.files(pattern="lst")
 rlist
 # R mi restituisce la lista dei file
 
+#Creo una lista di file di quella cartella che hanno in comune la parola lst. A questo punto li importo.
 #lapply(x,fan) con x=lista e fan=funzione da applicare
 import <- lapply(rlist,raster)
 import
@@ -338,6 +340,8 @@ import
 
 #ora impacchettiamo  file  con la funzione stack
 
+#funzione STACK per plottare tutte le immagini. Faccio un blocco di files tutti insieme. 
+#Raster stack per raggruppare file raster. Lo raggruppo in un file detto TGr. Stack mi passa dai singoli files ad un unico file grande. 
 TGr <- stack(import)
 TGr
 plot(TGr)
@@ -366,7 +370,10 @@ levelplot(TGr$lst_2000)
 
 #cambio colore
 cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
+
 #uso col.regions per levelplot
+#Il levelplot è più potente di plot per output colori e mi permette di confrontare più facilmente, più compatto e potente.
+#Le coordinate sono solo sulla destra e sotto. I colori si vedono meglio. I titoli delle singole mappe sono i nomi dei vari livelli, possiamo anche cambiarli. 
 levelplot(TGr, col.regions=cl)
 #la differenza con il plot normale è che il levelplot ha una gamma di colori molto maggiore ed ha un outpot migliore.
 
@@ -446,12 +453,15 @@ plot(testc)
 #LEZIONE 16/04/21
 
 #R_code_knitr.r
+#Knitr è una funzione che mi permette di creare un report automatico del mio codice. Do un nome al mio codice e lo uso per fare un template, un file finale. 
+#Il template è all’interno di knit r, pacchetto.
 
 setwd("/Users/ilari/Desktop/lab/")
 library(knitr)
 
 # starting from the code folder where framed.sty is put!
-
+# stitch() il primo argomento è come si chiama il codice, argomento 2 è il template che andiamo ad utilizzare (misc) 
+# e il file del template che si chiama knit template, argomento 3 è il nome del pacchetto da utilizzare (knitr)
 require(knitr)
 stitch("R_code_greenland.tex", template=system.file("misc", "knitr-template.Rnw", package="knitr"))
 
@@ -471,6 +481,7 @@ library(tinytex)
 # 5 - R Code Multivariate Analysis
 
 #R_code_multivariate_analysis
+#Quando ho tante bande con info correlate è utile compattare i dati attravrso l’analisi multivarita per vedere tutto il sistema in pochissime bande.
 
 library(raster)
 library(RStoolbox)
@@ -505,12 +516,15 @@ library(RStoolbox)
 
 setwd("/Users/ilari/Desktop/lab")
 
+# Funzione pairs:invece di fare manualmente la correlazione tra bande, posso usare la funzione pairs che mi permette di fare la correlazione a due a due di tutte le bande.
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 pairs(p224r63_2011)
 p224r63_2011
 
+#Funzione aggregate per aggregare raster.
 # aggregate cells: resampling (ricampionamento)del dato per avere una risoluzione più bassa e un dato più leggero
 # perchè la PCA è un processo lungo e complesso, alleggeriamo per rendere meno pesante il dato
+
 
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 p224r63_2011res
@@ -520,8 +534,10 @@ plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="lin")
 plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="lin")
 
 #rasterPCA prende il pachetto di dati e lo compatta in un numero minore di bande
+#PCA: prendo i dati originali e passo da una variabilità maggiore ad una minore, che sia però rappresentativa. 
 p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
 
+#Tramite la funzione summary posso ottenere un sommario del modello, posso capire in che percentuale le componenti sono rappresentative. 
 #chiediamo info sul modello, usiamo $model
 summary(p224r63_2011res_pca$model)
 #la funzione summary è una funzione del pacchetto di base che crea un sommario del modello (in questo caso)
@@ -529,7 +545,7 @@ summary(p224r63_2011res_pca$model)
 #per avere il 100% della variabilità ovviamento dobbiamo usare tutte le bande, ma non è il nostro scopo. noi vogliamo la max variabilità con il minimo delle bande.
 #anche nel plot delle immaini è così! nella banda 1 riusciamo a vedere tutto, foresta, zone agricole etc, nella banda 7 praticamente abbiamo solo rumore, un'immagine in cui è difficile distinguere le componenti.
 
-
+#Posso fare un plot RGB per inserire le prime tre componenti, quelle che riassumono di più la varaibilità. 
 plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
 
 #-----------------------------------------------
@@ -539,6 +555,8 @@ plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
 
 #R_code_classification.r
 #LEZIONE 21/04/21
+
+#Classificazione dei dati: processo che accorpa pixel con valori simili a rappresentanza di una classe. 
 
 library(raster)
 library(RStoolbox)
@@ -559,11 +577,16 @@ plotRGB(so, 1,2,3, stretch="lin")
 #il numero del file da usare, il numero di pixel da usare come training site, il numero di classi
 
 soc <- unsuperClass(so, nClasses=3)
-#uso $map perchè abbiamo anche il modello all'interno
+#Ottenuto l’oggetto soc, possiamo plottare l’immagine. Abbiamo creato il modello di classificazione.
+
+#Uso $map perchè abbiamo anche il modello all'interno. La funzione unsuperclass ha creato in uscita tutta la parte sul modello (quanti punti ha usato etc…) e la mappa in uscita. 
+#Quando plottiamo abbiamo un oggetto soc formato da tanti pezzi. 
 plot(soc$map)
 #per avere lo stesso  tipo di classificazione
 set.seed(42)
+
 #Unsupervised Classification 20 classes
+#Possiamo aumentare il numero di classi, l’occhio umano non può discriminare 20 classi con energia diversa ma il softwere si. 
 sov <- unsuperClass(so, nClasses=20)
 #uso $map perchè abbiamo anche il modello all'interno
 plot(sov$map)
@@ -626,7 +649,8 @@ library(raster)
 #si può usare anche require(raster) invece di library(raster)
 
 install.packages("rasterdiv")
-#library(rasterdiv) # for the worldwide NDVI
+#library(rasterdiv) 
+#for the worldwide NDVI
 library (rasterdiv)
 
 setwd("/Users/ilari/Desktop/lab")
@@ -663,7 +687,8 @@ dvi1 <- defor1$defor1.1 - defor1$defor1.2
 # dev.off()
 plot(dvi1)
 
-cl <- colorRampPalette(c('darkblue','yellow','red','black'))(100) # specifying a color scheme
+cl <- colorRampPalette(c('darkblue','yellow','red','black'))(100) 
+# specifying a color scheme
 plot(dvi1, col=cl, main="DVI at time 1")
 
 # time 2
@@ -722,13 +747,13 @@ plot(vi2, col=cl)
 #più è alta la pendenza e più sana è la vegetazione. Se la veg sta morendo, quindi non assorbe il rosse e inizia ad assorbire il NIR la slope si abbassa.
 
 #LEZIONE 05/05/21
-# worldwide NDVI
+#worldwide NDVI
 plot(copNDVI)
 
-# la funzione cbind() permette di eliminare/cambiaRE dei valori.
+#la funzione cbind() permette di eliminare/cambiare dei valori.
 #possiamo togliere tutta la parte che comprende acqua.
 
-# Pixels with values 253, 254 and 255 (water) will be set as NA’s.
+#Pixels with values 253, 254 and 255 (water) will be set as NA’s.
 copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
 plot(copNDVI)
 #copNDVI<-raster::reclassify(copNDVI, cbind(253:255, NA)) 
@@ -748,6 +773,7 @@ library(raster)
 library(RStoolbox) 
 # classification
 # install.packages("ggplot2")
+#La libreria ggplot2() pacchetto che ha delle funzioni per plottare le immagini in modo più potente tramite funzioni facili. 
 library(ggplot2)
 
 # install.packages("gridExtra")
@@ -757,6 +783,8 @@ library(gridExtra)
 setwd("/Users/ilari/Desktop/lab")
 
 # NIR 1, RED 2, GREEN 3
+#L’immagine sentilen è già elaborata e formata da tre bande. 
+#Non posso importare con la funzione raster, importerebbe solo il primo livello. Utilizziamo la funzione brick, che porta nel software tutto il blocco. 
 defor1 <- brick("defor1.jpg")
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 
@@ -949,6 +977,8 @@ plot(pc1sd5, col=clsd)
 source("source_test_lezione.r")
 source("source_ggplot.r")
 
+# https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
+# The package contains eight color scales: “viridis”, the primary choice, and five alternatives with similar properties - “magma”, “plasma”, “inferno”, “civids”, “mako”, and “rocket” -, and a rainbow color map - “turbo”.
 p1 <- ggplot() +
 #con questa funzione abbiamo creato una finestra vuota
 # per riempirla vanno aggiunti dei blocchi con il +
@@ -958,6 +988,8 @@ geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) +
 scale_fill_viridis()  +
 #cambio della palette di colori
 ggtitle("Standard deviation of PC1 by viridis colour scale")
+#Viridis, colori che possano percepire tutti, pacchetto che garantisce che tutte le legende siano blindfriendly rispetto ad alcune malattie della vista.
+
 
 #magma palette
 p2 <- ggplot() +
@@ -971,6 +1003,101 @@ geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) +
 scale_fill_viridis(option = "turbo")  +
 ggtitle("Standard deviation of PC1 by turbo colour scale")
 
+#grid.arrange:più grafici in una pagina. Deriva dalla libreria gridExtra. 
 grid.arrange(p1, p2, p3, nrow = 1)
 
 
+#-----------------------------------------------
+
+# 11 - R Code Spetral Signatures
+# R_code_spectral_signatures.r
+
+#FIRME SPETTRALI  posso risalire al tipo di materiale o addirittura al tipo di pianta 
+#foglie molto diverse e presentano delle firme spettrali diverse, riflettono a lunghezze d’onda differenti. 
+
+library(raster)
+library(rgdal)
+
+setwd("/Users/ilari/Desktop/lab/")
+defor2 <- brick("defor2.jpg")
+
+plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
+plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
+
+#La funzione click del pacchetto rgdal mi permette di ottenere informazioni cliccando su vari punti dell’immagine, in questo caso info sulla riflettanza. 
+defor2
+plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
+click(defor2, id=T, xy=T, cell=T, type="p", pch=16, cex=4, col="yellow")
+
+#results:
+#     x     y   cell defor2.1 defor2.2 defor2.3
+#1 348.5 229.5 178165      215        5       18
+#     x     y   cell defor2.1 defor2.2 defor2.3
+#1 410.5 256.5 158868      168      141      114
+
+
+band <- c(1,2,3)
+forest <- c(215,5,18)
+water <- c(168,141,114)
+spectrals <- data.frame(band,forest,water)
+attach(spectrals)
+spectrals
+
+ggplot(spectrals, aes(x=band)) +
+ geom_line(aes(y=forest), color="green")
+
+    
+ggplot(spectrals, aes(x=band)) +
+ geom_line(aes(y=forest), color="green") +
+ geom_line(aes(y=water), color="blue") +
+ labs(x="wavelength", y="reflectance")
+
+#multitemporal
+    
+defor1 <- brick("defor1.jpg")
+plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
+
+plotRGB(defor1, r=1, g=2, b=3, stretch="hist")
+click(defor1, id=T, xy=T, cell=T, type="p", pch=16, cex=4, col="yellow")
+# x     y   cell defor1.1 defor1.2 defor1.3
+#1 233.5 219.5 184446      213       13       26
+ #    x     y  cell defor1.1 defor1.2 defor1.3
+#1 22.5 353.5 88559      141       85       72
+
+plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
+click(defor2, id=T, xy=T, cell=T, type="p", pch=16, cex=4, col="yellow")
+#      x     y   cell defor2.1 defor2.2 defor2.3
+#1 115.5 252.5 161441      188       10       24
+#     x     y  cell defor2.1 defor2.2 defor2.3
+#1 23.5 352.5 89649      190      176      173
+
+
+# define the columns of the dataset:
+band <- c(1,2,3)
+time1 <- c(213,13,26)
+time2 <- c(141,85,72)
+
+spectralst <- data.frame(band, time1, time2)
+
+# plot the sepctral signatures
+ggplot(spectrals, aes(x=band)) +
+ geom_line(aes(y=time1), color="red") +
+ geom_line(aes(y=time2), color="gray") +
+ labs(x="band",y="reflectance")
+ 
+ # define the columns of the dataset:
+band <- c(1,2,3)
+time1 <- c(223,11,33)
+time1p2 <- c(218,16,38)
+time2 <- c(197,163,151)
+time2p2 <- c(149.157,133)
+
+spectralst <- data.frame(band, time1, time2, time1p2, time2p2)
+
+ # plot the sepctral signatures
+ggplot(spectralst, aes(x=band)) +
+ geom_line(aes(y=time1), color="red") +
+ geom_line(aes(y=time1p2), color="red") +
+ geom_line(aes(y=time2), color="gray") +
+ geom_line(aes(y=time2p2), color="gray") +
+ labs(x="band",y="reflectance")
