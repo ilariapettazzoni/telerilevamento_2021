@@ -7,14 +7,22 @@ library(raster)
 library(RStoolbox)
 
 setwd("/Users/ilari/Desktop/lab")
+
+#carico l'immagine con a funzione brick. uso brick perchè l'immagine è già creata, i 3 livelli rgb sono già uniti nell'immagine.
+
 so <- brick("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
 so
 #visualize RGB levels
 plotRGB(so, 1,2,3, stretch="lin")
 
 #Unsupervised Classification
-#Funzione unsuperclass: diversi argomenti. Devo scegliere il numero di classi, inizialmente guardando l’immagine in modo esplorativo. 
+#i punti iniziali per la classificazione (training site) li recupera direttamente il software.
+#per questo motivo si definisce "Unsupervised classification"
+#la funzione utilizzata è unsuperClass, tra gli argomenti della funzione abbiamo:
+#il numero del file da usare, il numero di pixel da usare come training site, il numero di classi
+
 soc <- unsuperClass(so, nClasses=3)
+
 #Ottenuto l’oggetto soc, possiamo plottare l’immagine. Abbiamo creato il modello di classificazione.
 
 #Uso $map perchè abbiamo anche il modello all'interno. La funzione unsuperclass ha creato in uscita tutta la parte sul modello (quanti punti ha usato etc…) e la mappa in uscita. 
@@ -50,6 +58,7 @@ plot(soc20$map,col=cl)
 
 # When John Wesley Powell led an expedition down the Colorado River and through the Grand Canyon in 1869, he was confronted with a daunting landscape. At its highest point, the serpentine gorge plunged 1,829 meters (6,000 feet) from rim to river bottom, making it one of the deepest canyons in the United States. In just 6 million years, water had carved through rock layers that collectively represented more than 2 billion years of geological history, nearly half of the time Earth has existed.
 
+#importo l'immagine con la funzione brick. brick infatti ci permette di caricare immagini satellitari già pronte, con le bande impacchettate.
 gc <- brick("dolansprings_oli_2013088_canyon_lrg.jpg")
 
 gcc2 <- unsuperClass(gc, nClasses=2)
