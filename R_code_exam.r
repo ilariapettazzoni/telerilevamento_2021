@@ -26,11 +26,7 @@ par(mfrow=c(1,2))
 plotRGB(Andes1, r=1, g=2, b=3, stretch="lin")
 plotRGB(Andes2, r=1, g=2, b=3, stretch="lin")
 
-# par
-# visualizzo le 2 immagini assieme
-par(mfrow=c(1,2))
-plot(Andes1)
-plot(Andes2)
+
 
 # Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
 # Funzione list.files: crea lista di file per la funzione lapply 
@@ -38,7 +34,7 @@ plot(Andes2)
 clist <- list.files(pattern="andes") # pattern = è la scritta in comune in ogni file, nel mio caso è columbia 
 # per ottenre le informazioni sui file 
 clist
-# [1] "andes_oli_2021332_lrg.jpg" "andes_oli_2022015_lrg.jpg"
+# [1] "andes_oli_20213321_lrg.jpg" "andes_oli_20220151_lrg.jpg"
 
 # Funzione lapply: applica alla lista dei file una funzione (raster) 
 import <- lapply(clist,raster)
@@ -51,8 +47,8 @@ import
 #resolution : 1, 1  (x, y)
 #extent     : 0, 3790, 0, 3790  (xmin, xmax, ymin, ymax)
 #crs        : NA 
-#source     : andes_oli_2021332_lrg.jpg 
-#names      : andes_oli_2021332_lrg 
+#source     : andes_oli_20213321_lrg.jpg 
+#names      : andes_oli_20213321_lrg 
 #values     : 0, 255  (min, max)
 
 
@@ -63,29 +59,29 @@ import
 #resolution : 1, 1  (x, y)
 #extent     : 0, 3790, 0, 3790  (xmin, xmax, ymin, ymax)
 #crs        : NA 
-#source     : andes_oli_2022015_lrg.jpg 
-#names      : andes_oli_2022015_lrg 
+#source     : andes_oli_20220151_lrg.jpg 
+#names      : andes_oli_20220151_lrg 
 #values     : 0, 255  (min, max)
 
 # Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
-ACi <- stack(import)
+An12<- stack(import)
 # Funzione per avere le info sul file
-ACi
+An12
 
 #class      : RasterStack 
 #dimensions : 3790, 3790, 14364100, 2  (nrow, ncol, ncell, nlayers)
 #resolution : 1, 1  (x, y)
 #extent     : 0, 3790, 0, 3790  (xmin, xmax, ymin, ymax)
 #crs        : NA 
-#names      : andes_oli_2021332_lrg, andes_oli_2022015_lrg 
+#names      : andes_oli_20213321_lrg, andes_oli_20220151_lrg 
 #min values :                     0,                     0 
 #max values :                   255,                   255 
 
 
 # Funzione plot: del singolo file
-plot(ACi)
+plot(An12)
 # Funzione plotRGB: crea plot con immagini sovrapposte
-plotRGB(ACi, 3, 2, 1, stretch="hist")
+plotRGB(An12, r=3, g=2, b=1, stretch="hist")
 # Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
-ggRGB(ACi, r=3, g=2, b=1, stretch="hist") # "hist": amplia i valori e aumenta i dettagli
+ggRGB(An12, r=3, g=2, b=1, stretch="hist") # "hist": amplia i valori e aumenta i dettagli
 
