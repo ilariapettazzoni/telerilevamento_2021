@@ -16,10 +16,10 @@ library(gridExtra)   # permette l'uso e creazione di griglie, tabelle e grafici
 library(rgdal) # per le firme spettrali
 library(grid) # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
 # settaggio della working directory 
-setwd("C:/lab/ES") # Windows
+setwd("/Users/ilari/Desktop/lab/")
 # Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
 # Funzione list.files: crea lista di file per la funzione lapply 
-clist <- list.files(pattern="columbia") # pattern = è la scritta in comune in ogni file, nel mio caso è columbia 
+clist <- list.files(pattern="andes") # pattern = è la scritta in comune in ogni file, nel mio caso è columbia 
 # per ottenre le informazioni sui file 
 clist
 # [1] "1 columbia_tm5_1986209_lrg.jpg"          
