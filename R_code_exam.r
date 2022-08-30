@@ -1,5 +1,7 @@
- #  Il ritiro del ghiacciaio Columbia in Alaska dal 1986 al 2019
- # immagini prese dal sito: https://earthobservatory.nasa.gov/world-of-change/ColumbiaGlacier
+ # In summer 2022, an early season heatwave caused many glaciers in the central Andes to lose their snow unusually early. 
+ # Temperatures soared to 40°C (104°F) in January 2022, rapidly melting off snowpack on several glaciers and exposing darker, dirtier ice.
+ #  https://earthobservatory.nasa.gov/images/149969/losing-a-layer-of-protection
+ # Earth explorer - Landsaat 8 - OLI
  # È uno dei ghiacciai che cambia più rapidamente nel mondo
  # Le instabilità dinamiche sono comuni ai ghiacciai marini-terminali e permettono un trasferimento di massa terra-mare molto rapido, 
  # tanto che questi ghiacciai costituiscono una delle più grandi componenti dell'innalzamento globale del livello del mare eustatico
@@ -17,15 +19,35 @@ library(rgdal) # per le firme spettrali
 library(grid) # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
 library (rasterdiv)
 # settaggio della working directory 
-setwd("/Users/ilari/Desktop/lab/Esame/")
+setwd("/Users/ilari/Desktop/lab/Esame/LC08_L2SP_233084_20220115_20220123_02_T1/")
 
-Andes1 <- brick("andes_oli_20213321_lrg.jpg")
-Andes2 <- brick("andes_oli_20220151_lrg.jpg")
+andes1 <- brick("andes_oli_20213321_lrg.jpg") # November 28
+andes2 <- brick("andes_oli_20220151_lrg.jpg")# January 15
+
+b1<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B1.TIF")
+b2<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B2.TIF")
+b3<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B3.TIF")
+#b4<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B4.TIF")
+#b5<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B5.TIF")
+#b6<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B6.TIF")
+#b7<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B7.TIF")
+list1 <- list(b1, b2, b3)
+sta <- stack (list1)
+sta
+plot(sta)
 
 par(mfrow=c(1,2))
-plotRGB(Andes1, r=1, g=2, b=3, stretch="lin")
-plotRGB(Andes2, r=1, g=2, b=3, stretch="lin")
+plotRGB(andes1, r=1, g=2, b=3, stretch="lin")
+plotRGB(andes2, r=1, g=2, b=3, stretch="lin")
 
+ext1 <- c(1500, 30000, -2000, 2500) # qui metti le coordinate (long ovest, long est, lat sud, lat nord)
+ext2 <- c(1500, 30000, -2000, 2500) # qui metti le coordinate (long ovest, long est, lat sud, lat nord)
+
+extension1 <- crop(andes1, ext1)
+extension2 <- crop(andes2, ext2)
+par(mfrow=c(1,2))
+plotRGB(extension1, r=1, g=2, b=3, stretch="lin")
+plotRGB(extension2, r=1, g=2, b=3, stretch="lin")
 
 
 # Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
