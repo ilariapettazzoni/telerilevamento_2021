@@ -1,27 +1,38 @@
-#Parched Poyang Lake
+                                                                        #Poyang Lake
+                                                                   ------------------------
+#Poyang Lake, in China’s Jiangxi Province, routinely fluctuates in size between the winter and summer seasons. 
+#In winter, water levels on the lake in are typically low. Then, summer rains cause the country’s largest freshwater lake to swell as water flows in from the Yangtze River.
+#The lake has not swelled in the summer of 2022. 
+#A prolonged heat wave and drought across much of the Yangtze River Basin dried the lake out early and pushed water levels to lows not seen in decades.
 
+#The Operational Land Imager (OLI) on Landsat 8 acquired these pairs of images on July 10, 2022 (left images), and August 27, 2022 (right images). 
+#The images are composites, and combine OLI observations of shortwave infrared, near infrared, and visible light.
 
-# caricamento delle library necessarie al funzionamento dei codici seguenti:
-library(raster)  # permette l'utilizzo dei raster e funzioni annesse
-library(rasterVis) # mi permette di visualizzare matrici e fornisce metodi di visualizzazione per i dati raster --> con questa libreria posso utilizzare la funzione levelplot
-library(RStoolbox) # permette l'uso della Unsupervised Classification
-library(ggplot2)  # permette l'uso delle funzioni ggplot
-library(gridExtra)   # permette l'uso e creazione di griglie, tabelle e grafici
-library(rgdal) # per le firme spettrali
-library(grid) # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
+                                                                   ------------------------
+
+# Caricamento delle library necessarie al funzionamento dei codici :
+library(raster)         # permette l'utilizzo dei raster e funzioni annesse
+library(rasterVis)      # permette di visualizzare matrici e fornisce metodi di visualizzazione per i dati raster --> con questa libreria posso utilizzare la funzione levelplot
+library(RStoolbox)      # permette l'uso della Unsupervised Classification
+library(ggplot2)        # permette l'uso delle funzioni ggplot
+library(gridExtra)      # permette l'uso e creazione di griglie, tabelle e grafici
+library(rgdal)          # per le firme spettrali
+library(grid)           # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
 library (rasterdiv)
 
-# settaggio della working directory 
+# Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
 
+#Importazione immagin
 poyangJ <- brick("poyang_oli_2022191_lrg.jpg") # July
 poyangA <- brick("poyang_oli_2022239_lrg.jpg")# August
 
+#Plottaggio 2 immagini colori naturali
 par(mfrow=c(1,2))
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 
-
+#Crop immagini per maggior dettaglio
 ext1 <- c(600, 3000, 2000, 20000) # coordinate (long ovest, long est, lat sud, lat nord)
 ext2 <- c(600, 3000, 2000, 20000) # coordinate (long ovest, long est, lat sud, lat nord)
 
@@ -77,14 +88,14 @@ PoJA<- stack(import)
 # Funzione per avere le info sul file
 PoJA
 
-class      : RasterStack 
-dimensions : 5323, 5179, 27567817, 2  (nrow, ncol, ncell, nlayers)
-resolution : 1, 1  (x, y)
-extent     : 0, 5179, 0, 5323  (xmin, xmax, ymin, ymax)
-crs        : NA 
-names      : poyang_oli_2022191_lrg, poyang_oli_2022239_lrg 
-min values :                      0,                      0 
-max values :                    255,                    255 
+#class      : RasterStack 
+#dimensions : 5323, 5179, 27567817, 2  (nrow, ncol, ncell, nlayers)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 5179, 0, 5323  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#names      : poyang_oli_2022191_lrg, poyang_oli_2022239_lrg 
+#min values :                      0,                      0 
+#max values :                    255,                    255 
 
 
 # Funzione plot: del singolo file
