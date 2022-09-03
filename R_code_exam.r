@@ -19,18 +19,18 @@ library (rasterdiv)
 # settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
 
-andes1 <- brick("andes_oli_20213321_lrg.jpg") # November 28
-andes2 <- brick("andes_oli_20220151_lrg.jpg")# January 15
+andescompl1 <- brick("andes_oli_20213321_lrg.jpg") # November 28
+andescompl2 <- brick("andes_oli_20220151_lrg.jpg")# January 15
 
 ext1 <- c(1500, 30000, -2000, 2500) # coordinate (long ovest, long est, lat sud, lat nord)
 ext2 <- c(1500, 30000, -2000, 2500) # coordinate (long ovest, long est, lat sud, lat nord)
 
-extension1 <- crop(andes1, ext1)
-extension2 <- crop(andes2, ext2)
+andes1 <- crop(andescompl1, ext1)
+andes2 <- crop(andescompl2, ext2)
 
 par(mfrow=c(1,2))
-plotRGB(extension1, r=1, g=2, b=3, stretch="lin")
-plotRGB(extension2, r=1, g=2, b=3, stretch="lin")
+plotRGB(andes1, r=1, g=2, b=3, stretch="lin")
+plotRGB(andes2, r=1, g=2, b=3, stretch="lin")
 
 
 b1<- raster("LC08_L2SP_233084_20220115_20220123_02_T1_SR_B1.TIF")
@@ -361,8 +361,8 @@ set.seed(42)
 #(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
 
 #effettuiamo una categorizzazione in 4 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
-ClAn1 <- unsuperClass(andes1, nClasses=5)  
-ClAn2 <- unsuperClass(andes2, nClasses=5)  
+ClAn1 <- unsuperClass(andes1, nClasses=3)  
+ClAn2 <- unsuperClass(andes2, nClasses=3)  
 
 # metto le immagini insieme per avere una mappa della situazione 
 par(mfrow=c(1,2)) # 3 colonne e 2 righe
@@ -375,13 +375,11 @@ plot(ClAn2$map)
 set.seed(42)
 plot(ClAn1$map)
 freq(ClAn1$map)  # freq è la funzione che mi va a calcolare la frequenza 
-#      value  count
-# value   count
-#[1,]     1 3807178
-#[2,]     2  570689
-#[3,]     3 3850156
-#[4,]     4 1628603
-#[5,]     5 4507474
+#value   count
+#[1,]     1 2596548 vegetazione
+#[2,]     2 2511074 roccia
+#[3,]     3  617378 neve e ghiaccio
+
 
 set.seed(42)
 plot(ClAn2$map)
