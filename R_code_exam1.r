@@ -33,8 +33,8 @@ plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 
 #Crop immagini per maggior dettaglio
-ext1 <- c(600, 3000, 2000, 20000) # coordinate (long ovest, long est, lat sud, lat nord)
-ext2 <- c(600, 3000, 2000, 20000) # coordinate (long ovest, long est, lat sud, lat nord)
+ext1 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat sud, lat nord)
+ext2 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat sud, lat nord)
 
 pj <- crop(poyangJ, ext1)
 pa <- crop(poyangA, ext2)
@@ -48,16 +48,15 @@ plotRGB(pa, r=1, g=2, b=3, stretch="lin")
 # Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
 # Funzione list.files: crea lista di file per la funzione lapply 
 
-plist <- list.files(pattern="poyang") # pattern = è la scritta in comune in ogni file, nel mio caso è columbia 
-# per ottenre le informazioni sui file 
-plist
+plist <- list.files(pattern="poyang")     # pattern = è la scritta in comune in ogni file
+
+plist                                     # per ottenre le informazioni sui file 
 # [1] "poyang_oli_2022191_lrg.jpg" "poyang_oli_2022239_lrg.jpg"
 
 # Funzione lapply: applica alla lista dei file una funzione (raster) 
 import <- lapply(plist,raster)
-# per ottenre le informazioni sui file
-import
 
+import
 # [[1]]
 # class      : RasterLayer 
 # band       : 1  (of  3  bands)
@@ -68,7 +67,6 @@ import
 # source     : poyang_oli_2022191_lrg.jpg 
 # names      : poyang_oli_2022191_lrg 
 # values     : 0, 255  (min, max)
-
 
 # [[2]]
 # class      : RasterLayer 
@@ -118,8 +116,7 @@ levelplot(PoJA)
 cls<-colorRampPalette(c("red","blue","yellow","white"))(100)
 # Nuovo levelplot col cambio di colori, nome e titolo
 levelplot(PoJA,col.regions=cls, main="Variation ice cover in time", names.attr=c("Nov","Jan"))
----------
-
+                                                              ------------------------
 # MULTIVARIATE ANALYSIS
 
 # 1. Le coppie di funzioni producono una matrice di scatterplot.
@@ -129,7 +126,7 @@ levelplot(PoJA,col.regions=cls, main="Variation ice cover in time", names.attr=c
 # Plot di tutte le correlazioni tra bande di un dataset (matrice di scatterplot di dati, non immagini)
 # La tabella riporta in diagonale le bande (sono le variabili)
 pairs(PoJA, main="Comparation with the function pairs")#??????
-# Result= 0.81
+# Result= 0.42
 # Indice di correlazione: più le bande sono correlate e maggiore sarà la dimensione dei caratteri
 
 # Importazione delle singole immagini per effettuare comparazioni
@@ -151,18 +148,19 @@ poyang1 <- raster("poyang_oli_2022191_lrg.jpg") # July
 poyang2 <- raster("poyang_oli_2022239_lrg.jpg")# August
 
 #vogliamo fare la sottrazione tra il primo e l'ultimo dato 
-# $ il dollaro mi lega il file originale al file interno 
 Pwater <- poyang1 - poyang2
-# creo una nuova colour and palette 
+# creo una nuova colour palette 
 clb <- colorRampPalette(c("red","white","yellow"))(100)
 plot(Pwater, col=clb) # zone rosse no acqua
 # usiamo level per avere una gamma di colori più dettagliata 
-levelplot(Pwater, col.regions=clb, main="Scioglimento del ghiaccio dal 1986 al 2019")
+levelplot(Pwater, col.regions=clb, main="Water level drop between July 10 2022  and August 27 2022")
 
+
+                                                            ------------------------ 
 # 2. Analisi delle componenti principali
 
 # PCA July
-poyang1_pca <- rasterPCA(poyangJ)
+poyang1_pca <-rasterPCA(poyangJ) #?????????????
 summary(poyang1_pca$model)
 # Importance of components:
 #                             Comp.1     Comp.2      Comp.3
@@ -174,7 +172,7 @@ plotRGB(poyang1_pca$map,r=1,g=2,b=3, stretch="Hist")
 plot(poyang1_pca$model) # per vedere il grafico
 
 #PCA August
-poyang2_pca <- rasterPCA(andes2)
+poyang2_pca <- rasterPCA(poyangA)
 summary(poyang2_pca$model)
 # Importance of components:
 #                             Comp.1     Comp.2      Comp.3
@@ -185,62 +183,62 @@ summary(poyang2_pca$model)
 plotRGB(poyang2_pca$map,r=1,g=2,b=3, stretch="Hist")
 plot(poyang2_pca$model) # per vedere il grafico
 
-# confrontiamo le PCA ottenute dal 1986 al 2019
-levelplot(An12,col.regions=cls, main="Variazione della copertura di ghiaccio nel tempo", names.attr=c("1986","1995"))
+# confrontiamo le PCA ottenute in Luglio e Agosto
+levelplot(An12,col.regions=cls, main="Water level drop", names.attr=c("July","August"))
 
 
 par(mfrow=c(1,2)) # 3 colonne e 2 righe
 plotRGB(andes1_pca$map,r=1,g=2,b=3, stretch="Hist") 
 plotRGB(andes2_pca$map,r=1,g=2,b=3, stretch="Hist") 
 
-
+                                                           --------------------
 # Multiframe con ggplot
-Co1986 <- ggRGB(andes1_pca$map,r=1,g=2,b=3, stretch="Hist")        
-Co1995 <- ggRGB(andes2_pca$map,r=1,g=2,b=3, stretch="Hist")
-grid.arrange(Co1986, Co1995, nrow=1, top = textGrob("Ghiacciaio Columbia 1986-2019",gp=gpar(fontsize=25,font=4)))
+PoJuly <- ggRGB(poyang1_pca$map,r=1,g=2,b=3, stretch="Hist")        
+PoAugu <- ggRGB(poyang2_pca$map,r=1,g=2,b=3, stretch="Hist")
+grid.arrange(PoJuly, PoAugu, nrow=1, top = textGrob("Water level drop between July 2022  and August 2022",gp=gpar(fontsize=25,font=4)))
 
-C <- grid.arrange(Co1986, Co1995, nrow=1, top = textGrob("Ghiacciaio Columbia 1986-2019",gp=gpar(fontsize=25,font=4)))
+C <- grid.arrange(Co1986, Co1995, nrow=1, top = textGrob("Water level drop between July 2022  and August 2022",gp=gpar(fontsize=25,font=4)))
 
 ggsave("grid.arrange.jpg",C) 
 
-
+                                                              -----------------------
 # Spectral Indices
 
 # La funzione spectralIndices permette di calcolare tutti gli indici
 # b1=NIR, b2=rosso, b3=verde
 # Immagine del ghiacciaio Columbia in Alaska nel 1986 
-spAn1<- spectralIndices(andes1, green = 3, red = 2, nir = 1) #colori associati al N° della banda
+spPo1<- spectralIndices(poyangJ, green=3, red=2, nir=1) #colori associati al N° della banda
 # Cambio i colori con colorRampPalette
 cl <- colorRampPalette(c('purple','yellow','light pink','orange'))(100)
 # Nuovo plot col cambio di colori
-plot(spAn1, col=cl)
+plot(spPo1, col=cl)
 
 # Immagine del ghiacciaio Columbia in Alaska nel 1995 
-spAn2 <- spectralIndices(andes2, green = 3, red = 2, nir = 1) #colori associati al N° della banda
+spPo2 <- spectralIndices(poyangA, green=3, red=2, nir=1) #colori associati al N° della banda
 # Nuovo plot col cambio di colori
-plot(spAn2, col=cl)
+plot(spPo2, col=cl)
 
 # guardo come si chiamano le bande del NIR e del ROSSO. 
-andes1
-# andes_oli_20213321_lrg.1, andes_oli_20213321_lrg.2, andes_oli_20213321_lrg.3 
-andes2
-#andes_oli_20220151_lrg.1, andes_oli_20220151_lrg.2, andes_oli_20220151_lrg.3 
+poyangJ
+# poyang_oli_2022191_lrg.1, poyang_oli_2022191_lrg.2, poyang_oli_2022191_lrg.3 
+poyangA
+#poyang_oli_2022239_lrg.1, poyang_oli_2022239_lrg.2, poyang_oli_2022239_lrg.3 
 
 # Primo indice del ghiacciaio Columbia in Alaska nel 1986: NIR - RED
-dvi1 <- andes1$andes_oli_20213321_lrg.1 - andes1$andes_oli_20213321_lrg.2
+dvi1 <- poyangJ$poyang_oli_2022191_lrg.1 - poyangJ$poyang_oli_2022191_lrg.2
 plot(dvi1)
 cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
-plot(dvi1, col=cld, main="DVI of Columbia 1986")
+plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
 
-dvi2 <- andes2$andes_oli_20220151_lrg.1 - andes2$andes_oli_20220151_lrg.2
+dvi2 <- poyangA$poyang_oli_2022239_lrg.1 - poyangA$poyang_oli_2022239_lrg.2
 plot(dvi2)
 cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
-plot(dvi2, col=cld, main="DVI of Columbia 1986")
+plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
 
 # Confronto il tutto per far emergere le differenze 
 par(mfrow=c(1,2))
-plot(dvi1, col=cld, main="DVI of Columbia 1986")
-plot(dvi2, col=cld, main="DVI of Columbia 1995")
+plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
+plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
 
 difdvi <- dvi1 - dvi2
 cldd <- colorRampPalette(c('blue','white','red'))(100)
@@ -250,18 +248,18 @@ plot(difdvi, col=cldd)
 # 2. NDVI - Normalized Difference Vegetation Index
 
 # NDVI= (NIR-RED) / (NIR+RED)
-# NDVI del ghiacciaio Columbia in Alaska nel 1986
-ndvi1 <- (dvi1) / (andes1$andes_oli_20213321_lrg.1 + andes1$andes_oli_20213321_lrg.2)
-plot(ndvi1, col=cld, main="NDVI of Columbia 1986")
+# NDVI del Lago Poyang in July
+ndvi1 <- (dvi1) / (poyangJ$poyang_oli_2022191_lrg.1 + poyangJ$poyang_oli_2022191_lrg.2)
+plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
 
 
-# NDVI del ghiacciaio Columbia in Alaska nel 1995
-ndvi2 <- (dvi2) / (andes2$andes_oli_20220151_lrg.1 + andes2$andes_oli_20220151_lrg.2)
-plot(ndvi2, col=cld, main="NDVI of Columbia 1995")
+# NDVI del Lago Poyang in August
+ndvi2 <- (dvi2) / (poyangA$poyang_oli_2022239_lrg.1 + poyangA$poyang_oli_2022239_lrg.2)
+plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
 
 par(mfrow=c(1,2))
-plot(ndvi1, col=cld, main="NDVI of Columbia 1986")
-plot(ndvi2, col=cld, main="NDVI of Columbia 1995")
+plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
+plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
 
 # Differenza del NDVI
 difndvi <- ndvi1 - ndvi2
@@ -272,72 +270,76 @@ plot(difndvi, col=cldd)
 # FIRME SPETTRALI
 
 # Creo una firma spettrale dell'immagine Columbia 1986 con la funzione "click"
-plotRGB(andes1, r=1, g=2, b=3, stretch="lin")
-click(andes1, id=T, xy=T, cell=T, type="p", pch=16, col="yellow")
+plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
+click(poyangJ, id=T, xy=T, cell=T, type="p", pch=16, col="yellow")
 
-#      x      y    cell andes_oli_20213321_lrg.1 andes_oli_20213321_lrg.2 andes_oli_20213321_lrg.3
-#1 3231.5 1312.5 9391062                      240                      239                      235
-#       x      y    cell andes_oli_20213321_lrg.1 andes_oli_20213321_lrg.2 andes_oli_20213321_lrg.3
-#1 2796.5 1454.5 8852447                      255                      224                      255
-#       x      y    cell andes_oli_20213321_lrg.1 andes_oli_20213321_lrg.2 andes_oli_20213321_lrg.3
-#1 1429.5 2309.5 5610630                       30                       43                       23
+#         x      y     cell poyang_oli_2022191_lrg.1 poyang_oli_2022191_lrg.2 poyang_oli_2022191_lrg.3
+#1 1686.5 3297.5 10489162                        0                       25                       48
+#       x      y     cell poyang_oli_2022191_lrg.1 poyang_oli_2022191_lrg.2 poyang_oli_2022191_lrg.3
+#1 2087.5 1272.5 20977038                       93                      171                       52
+#       x      y    cell poyang_oli_2022191_lrg.1 poyang_oli_2022191_lrg.2 poyang_oli_2022191_lrg.3
+#1 2648.5 3770.5 8040457                        0                       40                       75
+
+
 # Creo una firma spettrale dell'immagine Columbia 2019 con la funzione "click"
-plotRGB(andes2, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 # Bisogna avere la mappa fatta con plotRGB aperta sotto
 # Utilizzo la funzione click per cliccare sull'immagine plotRGB e le firme spettrali 
-click(andes2, id=T, xy=T, cell=T, type="p", pch=16, col="yellow")
+click(poyangA, id=T, xy=T, cell=T, type="p", pch=16, col="yellow")
 
-# x      y    cell andes_oli_20220151_lrg.1 andes_oli_20220151_lrg.2 andes_oli_20220151_lrg.3
-#1 3243.5 1356.5 9224314                      219                      215                      206
-#       x      y    cell andes_oli_20220151_lrg.1 andes_oli_20220151_lrg.2 andes_oli_20220151_lrg.3
-#1 2827.5 1456.5 8844898                      125                       96                       78
-#       x      y    cell andes_oli_20220151_lrg.1 andes_oli_20220151_lrg.2 andes_oli_20220151_lrg.3
-#1 1415.5 2299.5 5648516                         56                       58                       44
+# x      y     cell poyang_oli_2022239_lrg.1 poyang_oli_2022239_lrg.2 poyang_oli_2022239_lrg.3
+#1 1772.5 3368.5 10121539                      207                      203                      158
+#      x      y     cell poyang_oli_2022239_lrg.1 poyang_oli_2022239_lrg.2 poyang_oli_2022239_lrg.3
+#1 2043.5 1301.5 20826803                      149                      172                       55
+#      x      y    cell poyang_oli_2022239_lrg.1 poyang_oli_2022239_lrg.2 poyang_oli_2022239_lrg.3
+#1 2388.5 3705.5 8376832                        0                      175                      162
 
 # Creo ora un set di dati con i nostri risultati, definendo le colonne del dataset
 band <- c(1,2,3)
-Andes1p1 <- c(240, 239, 235)
-Andes1p2 <- c(255, 224, 255)
-Andes1p3 <- c(30, 43, 23)
-Andes2p1 <- c(219, 215, 206)
-Andes2p2 <- c(125, 96, 78)
-Andes2p3 <- c(56, 58, 44)
+Poyang1p1 <- c(0, 25, 48)
+Poyang1p2 <- c(93, 171, 52)
+Poyang1p3 <- c(0, 40, 75)
+Poyang2p1 <- c(207, 203, 158)
+Poyang2p2 <- c(149, 172, 55)
+Poyang2p3 <- c(0, 175, 162)
 
 # Funzione data.frame: crea un dataframe (tabella)
-spectralCo <- data.frame(band,Andes1p1,Andes1p2,Andes1p3,Andes2p1,Andes2p2,Andes2p3)
+spectralP <- data.frame(band,Poyang1p1,Poyang1p2,Poyang1p3,Poyang2p1,Poyang2p2,Poyang2p3)
 # richiamo spectralst per avere le info sul file
-spectralCo
+spectralP
 
-band Andes1p1 Andes1p2 Andes1p3 Andes2p1 Andes2p2 Andes2p3
-1    1      240      255       30      219      125       56
-2    2      239      224       43      215       96       58
-3    3      235      255       23      206       78       44
+# band Poyang1p1 Poyang1p2 Poyang1p3 Poyang2p1 Poyang2p2 Poyang2p3
+# 1    1         0        93         0       207       149         0
+# 2    2        25       171        40       203       172       175
+# 3    3        48        52        75       158        55       162
+
+
 
 
 # Plot delle firme spettrali
 # Utilizzo la funzione ggplot per determinare l'estetica del grafico
-# Rosso per i risultati del 2019, blu per i risultati del 2021
+# Rosso per i risultati di July, blu per i risultati di August
 # Funzione geom_line: connette le osservazioni a seconda del dato che è sulla X/Y
 # Funzione labs: modifica le etichette degli assi, le legende e il plottaggio
-ggplot(spectralCo, aes(x=band)) +
-geom_line(aes(y = Andes1p1), color="blue") +
-geom_line(aes(y = Andes1p2), color="blue") +
-geom_line(aes(y = Andes1p3), color="blue") +
-geom_line(aes(y = Andes2p1), color="red") +
-geom_line(aes(y = Andes2p2), color="red") +
-geom_line(aes(y = Andes2p3), color="red") +
+ggplot(spectralP, aes(x=band)) +
+geom_line(aes(y = Poyang1p1), color="blue") +
+geom_line(aes(y = Poyang1p2), color="blue") +
+geom_line(aes(y = Poyang1p3), color="blue") +
+geom_line(aes(y = Poyang2p1), color="red") +
+geom_line(aes(y = Poyang2p2), color="red") +
+geom_line(aes(y = Poyang2p3), color="red") +
 labs(x="band", y="reflectance")
 
 
 # Traccio questo set di dati con altri colori e linee evidenziando i punti fondamentali
 # Ilcolore chiaro e linea non continua rappresenta i risultati del 1986, il colore scuro pieno rappresenta i risultati del 2019
-ggplot(spectralCo, aes(x=band)) +
-geom_line(aes(y = Andes1p1), linetype="dotdash", color="light blue", size=2)+ geom_point(aes(y = Andes1p1), color="light blue", size=3) + 
-geom_line(aes(y = Andes1p2), linetype="dotdash", color="pink", size=2) + geom_point(aes(y = Andes1p2), color="pink", size=3) + 
-geom_line(aes(y = Andes1p3), linetype="dotdash", color="yellow", size=2) + geom_point(aes(y = Andes1p3), color="yellow", size=3) + 
-geom_line(aes(y = Andes2p1), color="orange", size=2) + geom_point(aes(y = Andes2p1), color="orange", size=3) + 
-geom_line(aes(y = Andes2p2), color="blue", size=2) + geom_point(aes(y = Andes2p2), color="blue", size=3) + 
-geom_line(aes(y = Andes2p3), color="purple", size=2) + geom_point(aes(y = Andes2p3), color="purple", size=3) + 
+ggplot(spectralP, aes(x=band)) +
+geom_line(aes(y = Poyang1p1), linetype="dotdash", color="light blue", size=2)+ geom_point(aes(y = Poyang1p1), color="light blue", size=3) + 
+geom_line(aes(y = Poyang1p2), linetype="dotdash", color="pink", size=2) + geom_point(aes(y = Poyang1p2), color="pink", size=3) + 
+geom_line(aes(y = Poyang1p3), linetype="dotdash", color="yellow", size=2) + geom_point(aes(y = Poyang1p3), color="yellow", size=3) + 
+geom_line(aes(y = Poyang2p1), color="orange", size=2) + geom_point(aes(y = Poyang2p1), color="orange", size=3) + 
+geom_line(aes(y = Poyang2p2), color="blue", size=2) + geom_point(aes(y = Poyang2p2), color="blue", size=3) + 
+geom_line(aes(y = Poyang2p3), color="purple", size=2) + geom_point(aes(y = Poyang2p3), color="purple", size=3) + 
 labs(x="band", y="reflectance") 
 
 #la funzione linetype mi permette di tratteggiare le linee
@@ -357,69 +359,74 @@ set.seed(42)
 #(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
 
 #effettuiamo una categorizzazione in 4 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
-ClAn1 <- unsuperClass(andes1, nClasses=3)  
-ClAn2 <- unsuperClass(andes2, nClasses=3)  
+ClP1 <- unsuperClass(poyangJ, nClasses=4)  
+ClP2 <- unsuperClass(poyangA, nClasses=4)  
 
 # metto le immagini insieme per avere una mappa della situazione 
 par(mfrow=c(1,2)) # 3 colonne e 2 righe
-plot(ClAn1$map)
-plot(ClAn2$map)
+plot(ClP1$map)
+plot(ClP2$map)
 
 #ora proviamo a calcolare la frequenza dei pixel di una certa classe.
 #lo possiamo fare con la funzion freq 
 
 set.seed(42)
-plot(ClAn1$map)
-freq(ClAn1$map)  # freq è la funzione che mi va a calcolare la frequenza 
-#value   count
-#[1,]     1 2596548 vegetazione
-#[2,]     2 2511074 roccia
-#[3,]     3  617378 neve e ghiaccio
-
+plot(ClP1$map)
+freq(ClP1$map)  # freq è la funzione che mi va a calcolare la frequenza 
+#value    count
+#[1,]     1  5266850 water
+#[2,]     2  2705158 nuvole e aree urbane
+#[3,]     3  4813999 campi
+#[4,]     4 14781810 vegetazione
 
 set.seed(42)
-plot(ClAn2$map)
-freq(ClAn2$map)  
-  value   count
-#[1,]     1  891962
-#[2,]     2 3906712
-#[3,]     3 3759189
-#[4,]     4 3125065
-#[5,]     5 2681172
+plot(ClP2$map)
+freq(ClP2$map)  
+#   value    count
+#[1,]     1 14305231 foresta e acqua profonda
+#[2,]     2  4320571 campi
+#[3,]     3  3151645 aree urbane e sabbia
+#[4,]     4  5790370 acqua bassa
 
 
 # ora calcoliamo la proporzione 
 #facciamo la somma dei valori 
-s1 <- 3807178 + 570689 + 3850156 + 1628603 + 4507474
-s1 # [1] 14364100, questo valore deve essere uguale per tutti 
+s1 <- 5266850 + 2705158 + 4813999 + 14781810
+s1 # [1] 27567817, questo valore deve essere uguale per tutti 
 
-s2 <- 891962 + 3906712 + 3759189 + 3125065 + 2681172
-s2 #[1] 14364100
+s2 <- 14305231 + 4320571 + 3151645 + 5790370 
+s2 #[1] 27567817
 
 #per calcolare la proporzione facciamo la frequenza fratto il totale
-prop1 <- freq(ClAn1$map)/ s1
+prop1 <- freq(ClP1$map)/ s1
 prop1
 #value      count
-#[1,] 6.961801e-08 0.26504814
-#[2,] 1.392360e-07 0.03973023
-#[3,] 2.088540e-07 0.26804018
-#[4,] 2.784720e-07 0.11338009
-#[5,] 3.480900e-07 0.31380135
-> 
-prop2 <- freq(ClAn2$map) / s2
+#[1,] 3.627418e-08 0.19105067
+#[2,] 7.254836e-08 0.09812739
+#[3,] 1.088225e-07 0.17462387
+#[4,] 1.450967e-07 0.53619806
+
+prop2 <- freq(ClP2$map) / s2
 prop2
 
- #value      count
-#[1,] 6.961801e-08 0.06209662
-#[2,] 1.392360e-07 0.27197750
-#[3,] 2.088540e-07 0.26170724
-#[4,] 2.784720e-07 0.21756079
-#[5,] 3.480900e-07 0.18665785
+# value     count
+#[1,] 3.627418e-08 0.5189105
+#[2,] 7.254836e-08 0.1567252
+#[3,] 1.088225e-07 0.1143233
+#[4,] 1.450967e-07 0.2100409
 
+perc_veg_1 <- 14781810 * 100 / 27567817
+#53.61981
+perc_wat_1 <- 5266850 * 100 / 27567817
+#19.10507
+perc_veg_2 <- 14305231 * 100 / 27567817
+#51.89105
+perc_wat_2 <- 5790370 * 100 / 27567817
+#21.00409
 
-cover <- c("ghiaccio + neve ", "acqua", "vegetazione + nuvole")
-percent_1986 <- c(45.07, 27.07, 27.87)
-percent_1995 <- c(40.97, 27.92, 31.08)
+cover <- c( "vegetazione","acqua")
+percent_1986 <- c(53.61, 19.10)
+percent_1995 <- c(51.89, 21.00)
 
 # per crare il nostro data Frames uso la funzione data.frame
 percentages <- data.frame(cover, percent_1986, percent_1995)
