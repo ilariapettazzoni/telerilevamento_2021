@@ -23,7 +23,7 @@ library (rasterdiv)
 # Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
 
-#Importazione immagin
+#Importazione immagini
 poyangJ <- brick("poyang_oli_2022191_lrg.jpg") # July
 poyangA <- brick("poyang_oli_2022239_lrg.jpg")# August
 
@@ -32,16 +32,186 @@ par(mfrow=c(1,2))
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 
+par(mfrow=c(1,2))
+plotRGB(poyangJ, r=3, g=2, b=1, stretch="hist")
+plotRGB(poyangA, r=3, g=2, b=1, stretch="hist")
+
 #Crop immagini per maggior dettaglio
 ext1 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat sud, lat nord)
 ext2 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat sud, lat nord)
 
-pj <- crop(poyangJ, ext1)
-pa <- crop(poyangA, ext2)
+pjcropped <- crop(poyangJ, ext1)
+pacropped <- crop(poyangA, ext2)
 
-par(mfrow=c(1,2))
-plotRGB(pj, r=1, g=2, b=3, stretch="lin")
-plotRGB(pa, r=1, g=2, b=3, stretch="lin")
+#Salvo le immagini
+jpeg("pjcropped.jpg")
+plotRGB(pjcropped, r=1, g=2, b=3, stretch="lin")
+dev.off()
+
+jpeg("pacropped.jpg")
+plotRGB(pacropped, r=1, g=2, b=3, stretch="lin")
+dev.off()
+
+#Importazione immagini
+PJulyc <- brick("pjcropped.jpg")
+PAuguc <- brick("pacropped.jpg")
+
+#Plot immagini Crop
+par(mfrow=c(1,2)) # 2 colonne e 2 righe
+plotRGB(PJulyc, r=1, g=2, b=3, stretch="lin")
+plotRGB(PAuguc, r=1, g=2, b=3, stretch="lin")
+
+
+#IMPORTO IMMAGINE 2019
+
+# Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
+# Funzione list.files: crea lista di file per la funzione lapply 
+
+
+plist <- list.files(pattern="LC08")     # pattern = è la scritta in comune in ogni file
+
+plist                                     # per ottenre le informazioni sui file 
+# [1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
+#[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
+#[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
+#[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
+# Funzione lapply: applica alla lista dei file una funzione (raster) 
+import <- lapply(plist,raster)
+
+import
+# [[1]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
+# values     : 0, 65535  (min, max)
+
+
+# [[2]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
+# values     : 0, 65535  (min, max)
+
+
+# [[3]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
+# values     : 0, 65535  (min, max)
+
+
+# # [[4]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
+# values     : 0, 65535  (min, max)
+
+
+# [[5]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
+# values     : 0, 65535  (min, max)
+
+
+# [[6]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
+# values     : 0, 65535  (min, max)
+
+
+# [[7]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
+# values     : 0, 65535  (min, max)
+
+
+
+# Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
+poyang19<- stack(import)
+# Funzione per avere le info sul file
+poyang19
+P2019 <- aggregate(poyang19, fact=1)
+P2019
+plot(P2019)
+
+# Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
+
+plot(ggRGB(P2019, 3, 2, 1) + 
+             ggtitle("Poyang Lake August 2019"))
+
+
+# Funzione plotRGB: crea plot con immagini sovrapposte
+plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
+             
+#Crop con drawExtent()
+# after running the following line, click on the map twice
+e <- drawExtent(show=TRUE, col="red")
+
+# after running the following line, click on the map twice
+cro<-crop(poyang19, e)
+plotRGB(cro, r=1, g=2, b=3, stretch="lin")
+
+#salva immagine 2019 true colors
+jpeg("cro.jpg")
+plotRGB(cro, r=3, g=2, b=1, stretch="lin")
+dev.off()
+
+#importo immagione croppata
+Poyang2019 <- brick("cro.jpg")
+plot(Poyang2019)
+
+#salvo e importo immagine 521
+jpeg("cro521.jpg")
+plotRGB(cro, r=5, g=2, b=1, stretch="lin")
+dev.off()
+Poyang19_5 <- brick("cro521.jpg")
+plot(Poyang19_5)
+
+#BELLISSIMO
+par(mfrow=c(2,2)) # 2 colonne e 2 righe
+plotRGB(poyangJ, r=2, g=3, b=3, stretch="lin")
+plotRGB(poyangA, r=2, g=3, b=3, stretch="lin")
+plotRGB(Poyang19_5, r=1, g=2, b=3, stretch="lin")
+___________________________________________________________________________________________________________
+#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
+set.seed(42)
+
+ClP3 <- unsuperClass(Poyang2019, nClasses=6)  
+colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
+
+# metto le immagini insieme per avere una mappa della situazione 
+plot(ClP3$map, col=colo)
 
 
 
@@ -49,14 +219,14 @@ plotRGB(pa, r=1, g=2, b=3, stretch="lin")
 
                                          ------------------------
 # MULTIVARIATE ANALYSIS
-
+??????????????????????????????????????????????????????????????
 # 1. Le coppie di funzioni producono una matrice di scatterplot.
 
 # Traccia le correlazioni tra le 3 bande del mio stack.
 # I valori di correlazione degli indici vanno da 0 a 1: 1= correlazione, 0 = nessuna correlazione
 # Plot di tutte le correlazioni tra bande di un dataset (matrice di scatterplot di dati, non immagini)
 # La tabella riporta in diagonale le bande (sono le variabili)
-pairs(PoJA, main="Comparation with the function pairs")#??????
+pairs(P2019, main="Comparation with the function pairs")#??????
 # Result= 0.42
 # Indice di correlazione: più le bande sono correlate e maggiore sarà la dimensione dei caratteri
 
@@ -70,7 +240,7 @@ poyangA <- brick("poyang_oli_2022239_lrg.jpg")# August
 par(mfrow=c(1,2))
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
-
+?????????????????????????????????????????????????????????????????????????
 
 
 # ora applichiamo l'algebra applicata alle matrici 
@@ -81,7 +251,7 @@ poyang2 <- raster("poyang_oli_2022239_lrg.jpg")# August
 #vogliamo fare la sottrazione tra il primo e l'ultimo dato 
 Pwater <- poyang1 - poyang2
 # creo una nuova colour palette 
-clb <- colorRampPalette(c("red","white","yellow"))(100)
+clb <- colorRampPalette(c("purple","pink","light blue", "white"))(100)
 plot(Pwater, col=clb) # zone rosse no acqua
 # usiamo level per avere una gamma di colori più dettagliata 
 levelplot(Pwater, col.regions=clb, main="Water level drop between July 10 2022  and August 27 2022")
@@ -402,143 +572,4 @@ grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + coord_polar(theta
 
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
 ______________________
-
-# Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
-# Funzione list.files: crea lista di file per la funzione lapply 
-
-
-plist <- list.files(pattern="LC08")     # pattern = è la scritta in comune in ogni file
-
-plist                                     # per ottenre le informazioni sui file 
-# [1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
-#[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
-#[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
-#[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
-# Funzione lapply: applica alla lista dei file una funzione (raster) 
-import <- lapply(plist,raster)
-
-import
-# [[1]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
-# values     : 0, 65535  (min, max)
-
-
-# [[2]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
-# values     : 0, 65535  (min, max)
-
-
-# [[3]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
-# values     : 0, 65535  (min, max)
-
-
-# # [[4]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
-# values     : 0, 65535  (min, max)
-
-
-# [[5]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
-# values     : 0, 65535  (min, max)
-
-
-# [[6]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
-# values     : 0, 65535  (min, max)
-
-
-# [[7]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
-# values     : 0, 65535  (min, max)
-
-
-
-# Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
-poyang19<- stack(import)
-# Funzione per avere le info sul file
-poyang19
-P2019 <- aggregate(poyang19, fact=10)
-P2019
-plot(P2019)
-
-# Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
-
-plot(ggRGB(P2019, 3, 2, 1) + 
-             ggtitle("Poyang Lake August 2019"))
-
-
-# Funzione plotRGB: crea plot con immagini sovrapposte
-plotRGB(poyang19, r=1, g=2, b=3, stretch="lin")
-             
-
-# after running the following line, click on the map twice
-e <- drawExtent(show=TRUE, col="red")
-
-# after running the following line, click on the map twice
-cro<-crop(poyang19, e)
-plotRGB(cro, r=1, g=2, b=3, stretch="lin")
-
-ext <- c(20, 20, 10, 20) # qui metti le coordinate (long ovest, long est, lat sud, lat nord)
-extension <- crop(poyang19, ext)
-  
-plotRGB(extension, r=3, g=2, b=1, stretch="lin")
-
-jpeg("extension.jpg")
-dev.off()
-
-Poyang2019 <- brick("extension.jpg")
-
-#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
-set.seed(42)
-
-ClP3 <- unsuperClass(extension, nClasses=6)  
-colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
-
-# metto le immagini insieme per avere una mappa della situazione 
-plot(ClP3$map, col=colo)
-
-
 
