@@ -163,12 +163,10 @@ poyang19<- stack(import)
 poyang19
 P2019 <- aggregate(poyang19, fact=1)
 P2019
-plot(P2019)
 
-# Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
-
-plot(ggRGB(P2019, 3, 2, 1) + 
-             ggtitle("Poyang Lake August 2019"))
+par(mfrow=c(2,1))
+plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
+plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
 
 
 # Funzione plotRGB: crea plot con immagini sovrapposte
@@ -226,8 +224,16 @@ plot(ClP3$map, col=colo)
 # I valori di correlazione degli indici vanno da 0 a 1: 1= correlazione, 0 = nessuna correlazione
 # Plot di tutte le correlazioni tra bande di un dataset (matrice di scatterplot di dati, non immagini)
 # La tabella riporta in diagonale le bande (sono le variabili)
-pairs(P2019, main="Comparation with the function pairs")#??????
-# Result= 0.42
+pairs(P2019, main="Comparation with the function pairs")
+
+
+P2019_pca <- rasterPCA(P2019)#????????
+
+summary(P2019_pca$model)
+
+# dev.off()
+plotRGB(P2019s_pca$map, r=1, g=2, b=3, stretch="lin")
+
 # Indice di correlazione: più le bande sono correlate e maggiore sarà la dimensione dei caratteri
 
 # Importazione delle singole immagini per effettuare comparazioni
