@@ -290,7 +290,7 @@ set.seed(42)
 #(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
 
 
-#effettuiamo una categorizzazione in 4 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
+#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
 ClP1 <- unsuperClass(poyangJ, nClasses=6)  
 ClP2 <- unsuperClass(poyangA, nClasses=6)  
 colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
@@ -511,15 +511,33 @@ plot(ggRGB(P2019, 3, 2, 1) +
 
 
 # Funzione plotRGB: crea plot con immagini sovrapposte
+plotRGB(poyang19, r=1, g=2, b=3, stretch="lin")
+             
+
+# after running the following line, click on the map twice
+e <- drawExtent(show=TRUE, col="red")
+
+# after running the following line, click on the map twice
+cro<-crop(poyang19, e)
+plotRGB(cro, r=1, g=2, b=3, stretch="lin")
+
+ext <- c(20, 20, 10, 20) # qui metti le coordinate (long ovest, long est, lat sud, lat nord)
+extension <- crop(poyang19, ext)
+  
+plotRGB(extension, r=3, g=2, b=1, stretch="lin")
+
+jpeg("extension.jpg")
+
+Poyang2019 <- brick("extension.jpg")
+
+#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
+set.seed(42)
+
+ClP3 <- unsuperClass(extension, nClasses=6)  
+colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
+
+# metto le immagini insieme per avere una mappa della situazione 
+plot(ClP3$map, col=colo)
 
 
-plotRGB(P2019, r=3, g=2, b=1, stretch="lin")
 
-
-# Funzione levelplot: disegna più grafici di colore falso con una singola legenda ???????
-levelplot(P2019)
-# Cambio di colori a piacimento (colorRampPalette si può usare solo su immagine singole, non su RGB)
-cls<-colorRampPalette(c("red","blue","yellow","white"))(100)
-# Nuovo levelplot col cambio di colori, nome e titolo
-levelplot(P2019,col.regions=cls, main="Poyang Lake 2019")
-                     
