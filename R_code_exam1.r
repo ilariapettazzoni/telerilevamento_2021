@@ -527,6 +527,7 @@ extension <- crop(poyang19, ext)
 plotRGB(extension, r=3, g=2, b=1, stretch="lin")
 
 jpeg("extension.jpg")
+dev.off()
 
 Poyang2019 <- brick("extension.jpg")
 
