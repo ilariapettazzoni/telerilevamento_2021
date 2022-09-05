@@ -45,78 +45,9 @@ plotRGB(pa, r=1, g=2, b=3, stretch="lin")
 
 
 
-# Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
-# Funzione list.files: crea lista di file per la funzione lapply 
-
-plist <- list.files(pattern="poyang")     # pattern = è la scritta in comune in ogni file
-
-plist                                     # per ottenre le informazioni sui file 
-# [1] "poyang_oli_2022191_lrg.jpg" "poyang_oli_2022239_lrg.jpg"
-
-# Funzione lapply: applica alla lista dei file una funzione (raster) 
-import <- lapply(plist,raster)
-
-import
-# [[1]]
-# class      : RasterLayer 
-# band       : 1  (of  3  bands)
-# dimensions : 5323, 5179, 27567817  (nrow, ncol, ncell)
-# resolution : 1, 1  (x, y)
-# extent     : 0, 5179, 0, 5323  (xmin, xmax, ymin, ymax)
-# crs        : NA 
-# source     : poyang_oli_2022191_lrg.jpg 
-# names      : poyang_oli_2022191_lrg 
-# values     : 0, 255  (min, max)
-
-# [[2]]
-# class      : RasterLayer 
-# band       : 1  (of  3  bands)
-# dimensions : 5323, 5179, 27567817  (nrow, ncol, ncell)
-# resolution : 1, 1  (x, y)
-# extent     : 0, 5179, 0, 5323  (xmin, xmax, ymin, ymax)
-# crs        : NA 
-# source     : poyang_oli_2022239_lrg.jpg 
-# names      : poyang_oli_2022239_lrg 
-# values     : 0, 255  (min, max)
 
 
-
-# Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
-PoJA<- stack(import)
-# Funzione per avere le info sul file
-PoJA
-
-#class      : RasterStack 
-#dimensions : 5323, 5179, 27567817, 2  (nrow, ncol, ncell, nlayers)
-#resolution : 1, 1  (x, y)
-#extent     : 0, 5179, 0, 5323  (xmin, xmax, ymin, ymax)
-#crs        : NA 
-#names      : poyang_oli_2022191_lrg, poyang_oli_2022239_lrg 
-#min values :                      0,                      0 
-#max values :                    255,                    255 
-
-
-# Funzione plot: del singolo file
-plot(PoJA)
-# Funzione plotRGB: crea plot con immagini sovrapposte
-#???????????????????
-
-par(mfrow=c(1,2))
-plotRGB(poyangJ, r=3, g=2, b=1, stretch="hist")
-plotRGB(poyangA, r=3, g=2, b=1, stretch="hist")
-
-# Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
-)
-ggRGB(poyangJ, r=3, g=2, b=1, stretch="hist") # "hist": amplia i valori e aumenta i dettagli
-ggRGB(poyangA, r=3, g=2, b=1, stretch="hist")
-
-# Funzione levelplot: disegna più grafici di colore falso con una singola legenda ???????
-levelplot(PoJA)
-# Cambio di colori a piacimento (colorRampPalette si può usare solo su immagine singole, non su RGB)
-cls<-colorRampPalette(c("red","blue","yellow","white"))(100)
-# Nuovo levelplot col cambio di colori, nome e titolo
-levelplot(PoJA,col.regions=cls, main="Variation ice cover in time", names.attr=c("Nov","Jan"))
-                                                              ------------------------
+                                         ------------------------
 # MULTIVARIATE ANALYSIS
 
 # 1. Le coppie di funzioni producono una matrice di scatterplot.
@@ -358,14 +289,19 @@ set.seed(42)
 #per evitare questa cosa esiste la funzione set.seed() che ci permette di assegnare un numero al risultato 
 #(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
 
+
 #effettuiamo una categorizzazione in 4 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
-ClP1 <- unsuperClass(poyangJ, nClasses=4)  
-ClP2 <- unsuperClass(poyangA, nClasses=4)  
+ClP1 <- unsuperClass(poyangJ, nClasses=6)  
+ClP2 <- unsuperClass(poyangA, nClasses=6)  
+colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
 
 # metto le immagini insieme per avere una mappa della situazione 
-par(mfrow=c(1,2)) # 3 colonne e 2 righe
-plot(ClP1$map)
-plot(ClP2$map)
+par(mfrow=c(2,2)) # 2 colonne e 2 righe
+plot(ClP1$map, col=colo)
+plot(ClP2$map, col=colo)
+plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
+
 
 #ora proviamo a calcolare la frequenza dei pixel di una certa classe.
 #lo possiamo fare con la funzion freq 
@@ -373,72 +309,89 @@ plot(ClP2$map)
 set.seed(42)
 plot(ClP1$map)
 freq(ClP1$map)  # freq è la funzione che mi va a calcolare la frequenza 
-#value    count
-#[1,]     1  5266850 water
-#[2,]     2  2705158 nuvole e aree urbane
-#[3,]     3  4813999 campi
-#[4,]     4 14781810 vegetazione
+#   value   count
+#[1,]     1 6182327 area urbana
+#[2,]     2 2505606 altra vegetazione
+#[3,]     3 3383026 altra vegetazione
+#[4,]     4 1237165 nuvole+ terreno nudo
+#[5,]     5 9394953 foresta
+#[6,]     6 4864740 acqua
 
 set.seed(42)
 plot(ClP2$map)
 freq(ClP2$map)  
-#   value    count
-#[1,]     1 14305231 foresta e acqua profonda
-#[2,]     2  4320571 campi
-#[3,]     3  3151645 aree urbane e sabbia
-#[4,]     4  5790370 acqua bassa
+#. value    count
+#[1,]     1  2437370 dune + nuvole
+#[2,]     2   934047 acqua
+#[3,]     3 12574240 foresta
+#[4,]     4  3701245 area urbana
+#[5,]     5  3099614  altra vegetazione
+#[6,]     6  4821301 altra vegetazione
 
 
 # ora calcoliamo la proporzione 
 #facciamo la somma dei valori 
-s1 <- 5266850 + 2705158 + 4813999 + 14781810
+s1 <- 6182327 + 2505606 + 3383026 + 1237165 + 9394953 + 4864740
 s1 # [1] 27567817, questo valore deve essere uguale per tutti 
 
-s2 <- 14305231 + 4320571 + 3151645 + 5790370 
+s2 <- 2437370 + 934047 + 12574240 + 3701245 + 3099614 + 4821301
 s2 #[1] 27567817
 
 #per calcolare la proporzione facciamo la frequenza fratto il totale
 prop1 <- freq(ClP1$map)/ s1
 prop1
-#value      count
-#[1,] 3.627418e-08 0.19105067
-#[2,] 7.254836e-08 0.09812739
-#[3,] 1.088225e-07 0.17462387
-#[4,] 1.450967e-07 0.53619806
+#       value      count
+# [1,] 3.627418e-08 0.22425885
+# [2,] 7.254836e-08 0.09088881
+# [3,] 1.088225e-07 0.12271650
+# [4,] 1.450967e-07 0.04487715
+# [5,] 1.813709e-07 0.34079423
+# [6,] 2.176451e-07 0.17646446
 
 prop2 <- freq(ClP2$map) / s2
 prop2
 
-# value     count
-#[1,] 3.627418e-08 0.5189105
-#[2,] 7.254836e-08 0.1567252
-#[3,] 1.088225e-07 0.1143233
-#[4,] 1.450967e-07 0.2100409
+#  value      count
+# [1,] 3.627418e-08 0.08841360
+# [2,] 7.254836e-08 0.03388179
+# [3,] 1.088225e-07 0.45612027
+# [4,] 1.450967e-07 0.13425963
+# [5,] 1.813709e-07 0.11243596
+# [6,] 2.176451e-07 0.17488875
 
-perc_veg_1 <- 14781810 * 100 / 27567817
-#53.61981
-perc_wat_1 <- 5266850 * 100 / 27567817
-#19.10507
-perc_veg_2 <- 14305231 * 100 / 27567817
-#51.89105
-perc_wat_2 <- 5790370 * 100 / 27567817
-#21.00409
 
-cover <- c( "vegetazione","acqua")
-percent_1986 <- c(53.61, 19.10)
-percent_1995 <- c(51.89, 21.00)
+perc_dunes_1 <- 1237165 * 100 / 27567817
+perc_dunes_1
+#[1] 4.487715
+perc_wat_1 <- 4864740 * 100 / 27567817
+perc_wat_1
+#[1] 17.64645
+perc_dunes_2 <- 2437370 * 100 / 27567817
+perc_dunes_2
+#[1] 8.84136
+perc_wat_2 <- 934047 * 100 / 27567817
+perc_wat_2 
+#[1] 3.388179
+
+cover <- c("acqua","dune")
+percentWD1 <- c(17.64645, 4.487715)
+percentWD2 <- c(3.388179, 8.84136)
+
 
 # per crare il nostro data Frames uso la funzione data.frame
-percentages <- data.frame(cover, percent_1986, percent_1995)
+percentages <- data.frame(cover, percentWD1, percentWD2)
 percentages
+#cover percentW1 percentW2
+#1 acqua  17.64645  3.388179
+#2  dune   4.487715   8.841360
 
-ggplot(percentages, aes(x=cover, y=percent_1986, color=cover)) + geom_bar(stat="identity", fill="violet")
-ggplot(percentages, aes(x=cover, y=percent_1995, color=cover)) + geom_bar(stat="identity", fill="yellow")
+ggplot(percentages, aes(x=cover, y=percentWD1, color=cover)) + geom_bar(stat="identity", fill="violet")
+ggplot(percentages, aes(x=cover, y=percentWD2, color=cover)) + geom_bar(stat="identity", fill="yellow")
 
 # metto in un unico grafico tutte le date posizionandolo in orizzontale
-C1 <- ggplot(percentages, aes(x=cover, y=percent_1986, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
+C1 <- ggplot(percentages, aes(x=cover, y=percentWD1, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
 C1 + coord_flip()
-C2 <- ggplot(percentages, aes(x=cover, y=percent_1995, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
+C2 <- ggplot(percentages, aes(x=cover, y=percentWD2, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
 C2 + coord_flip()
 
 grid.arrange(C1 + coord_flip(), C2 + coord_flip(), nrow=2)
@@ -448,4 +401,125 @@ grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + coord_polar(theta
          
 
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
+______________________
 
+# Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
+# Funzione list.files: crea lista di file per la funzione lapply 
+
+
+plist <- list.files(pattern="LC08")     # pattern = è la scritta in comune in ogni file
+
+plist                                     # per ottenre le informazioni sui file 
+# [1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
+#[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
+#[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
+#[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
+# Funzione lapply: applica alla lista dei file una funzione (raster) 
+import <- lapply(plist,raster)
+
+import
+# [[1]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
+# values     : 0, 65535  (min, max)
+
+
+# [[2]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
+# values     : 0, 65535  (min, max)
+
+
+# [[3]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
+# values     : 0, 65535  (min, max)
+
+
+# # [[4]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
+# values     : 0, 65535  (min, max)
+
+
+# [[5]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
+# values     : 0, 65535  (min, max)
+
+
+# [[6]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
+# values     : 0, 65535  (min, max)
+
+
+# [[7]]
+# class      : RasterLayer 
+# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+# resolution : 30, 30  (x, y)
+# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
+# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
+# values     : 0, 65535  (min, max)
+
+
+
+# Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
+poyang19<- stack(import)
+# Funzione per avere le info sul file
+poyang19
+P2019 <- aggregate(poyang19, fact=10)
+P2019
+plot(P2019)
+
+# Funzione ggr: plotta file raster in differenti scale di grigio, migliorando la qualità dell'immagine e aggiungengo le coordinate spaziali sugli assi x e y
+
+plot(ggRGB(P2019, 3, 2, 1) + 
+             ggtitle("Poyang Lake August 2019"))
+
+
+# Funzione plotRGB: crea plot con immagini sovrapposte
+
+
+plotRGB(P2019, r=3, g=2, b=1, stretch="lin")
+
+
+# Funzione levelplot: disegna più grafici di colore falso con una singola legenda ???????
+levelplot(P2019)
+# Cambio di colori a piacimento (colorRampPalette si può usare solo su immagine singole, non su RGB)
+cls<-colorRampPalette(c("red","blue","yellow","white"))(100)
+# Nuovo levelplot col cambio di colori, nome e titolo
+levelplot(P2019,col.regions=cls, main="Poyang Lake 2019")
+                     
