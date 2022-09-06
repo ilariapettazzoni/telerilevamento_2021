@@ -11,13 +11,13 @@
                                                                    ------------------------
 
 # Caricamento delle library necessarie al funzionamento dei codici :
-library(raster)         # permette l'utilizzo dei raster e funzioni annesse
-library(rasterVis)      # permette di visualizzare matrici e fornisce metodi di visualizzazione per i dati raster --> con questa libreria posso utilizzare la funzione levelplot
-library(RStoolbox)      # permette l'uso della Unsupervised Classification
-library(ggplot2)        # permette l'uso delle funzioni ggplot
-library(gridExtra)      # permette l'uso e creazione di griglie, tabelle e grafici
-library(rgdal)          # per le firme spettrali
-library(grid)           # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
+library(raster)                                # permette l'utilizzo dei raster e funzioni annesse
+library(rasterVis)                             # permette di visualizzare matrici e fornisce metodi di visualizzazione per i dati raster --> con questa libreria posso utilizzare la funzione levelplot
+library(RStoolbox)                             # permette l'uso della Unsupervised Classification
+library(ggplot2)                               # permette l'uso delle funzioni ggplot
+library(gridExtra)                             # permette l'uso e creazione di griglie, tabelle e grafici
+library(rgdal)                                 # per le firme spettrali
+library(grid)                                  # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
 library (rasterdiv)
 
 # Settaggio della working directory 
@@ -43,7 +43,7 @@ ext2 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat
 pjcropped <- crop(poyangJ, ext1)
 pacropped <- crop(poyangA, ext2)
 
-#Salvo le immagini
+#Salvo le immagini /////// Non lanciare su R
 jpeg("pjcropped.jpg")
 plotRGB(pjcropped, r=1, g=2, b=3, stretch="lin")
 dev.off()
@@ -51,7 +51,7 @@ dev.off()
 jpeg("pacropped.jpg")
 plotRGB(pacropped, r=1, g=2, b=3, stretch="lin")
 dev.off()
-
+//////////////////////////////////////////////
 #Importazione immagini
 PJulyc <- brick("pjcropped.jpg")
 PAuguc <- brick("pacropped.jpg")
@@ -161,18 +161,21 @@ import
 poyang19<- stack(import)
 # Funzione per avere le info sul file
 poyang19
-P2019 <- aggregate(poyang19, fact=1)
-P2019
 
-par(mfrow=c(2,1))
-plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
-plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
+
+
+subset<-extent(c(338085, 573394, 338085, 3315538))
+B<-crop(poyang19,subset)
+
+#par(mfrow=c(2,1))
+#plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
+#plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
 
 
 # Funzione plotRGB: crea plot con immagini sovrapposte
-plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
+plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
              
-#Crop con drawExtent()
+#Crop con drawExtent() ////////////////// Non lanciare si R
 # after running the following line, click on the map twice
 e <- drawExtent(show=TRUE, col="red")
 
@@ -180,27 +183,49 @@ e <- drawExtent(show=TRUE, col="red")
 cro<-crop(poyang19, e)
 plotRGB(cro, r=1, g=2, b=3, stretch="lin")
 
+
 #salva immagine 2019 true colors
 jpeg("cro.jpg")
 plotRGB(cro, r=3, g=2, b=1, stretch="lin")
 dev.off()
 
-#importo immagione croppata
-Poyang2019 <- brick("cro.jpg")
-plot(Poyang2019)
 
 #salvo e importo immagine 521
 jpeg("cro521.jpg")
 plotRGB(cro, r=5, g=2, b=1, stretch="lin")
 dev.off()
+
+#salvo e importo immagine 764
+jpeg("cro764.jpg")
+plotRGB(cro, r=7, g=6, b=4, stretch="lin")
+dev.off()
+
+#////////////////////////////////////////////////////
+
+#importo immagioni croppate
+Poyang2019 <- brick("cro.jpg")
 Poyang19_5 <- brick("cro521.jpg")
-plot(Poyang19_5)
+Poyang19_7 <- brick("cro764.jpg")
+
+ext1 <- c(0, 5179, 0, 5323)        # coordinate (long ovest, long est, lat sud, lat nord)
+p19cropped <- crop(poyang19, ext1)
+par(mfrow=c(2,2)) # 2 colonne e 2 righe
+plotRGB(p19cropped, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
+
+#meglio convertire la mappa più definita in quella meno definita, R fa un lavoro migliore
+P2019res <- resample(Poyang19_7, poyangJ)
+#scelgo di sovrascriverla all'immagine originale
+#primo argomento: img da ricampionare
+#secondo argomento: img su cui adattare il ricampionamento
+P2019res
 
 #BELLISSIMO
 par(mfrow=c(2,2)) # 2 colonne e 2 righe
-plotRGB(poyangJ, r=2, g=3, b=3, stretch="lin")
-plotRGB(poyangA, r=2, g=3, b=3, stretch="lin")
-plotRGB(Poyang19_5, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
+plotRGB(P2019res, r=1, g=2, b=3, stretch="lin")
 ___________________________________________________________________________________________________________
 #effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
 set.seed(42)
@@ -332,12 +357,12 @@ poyangA
 #poyang_oli_2022239_lrg.1, poyang_oli_2022239_lrg.2, poyang_oli_2022239_lrg.3 
 
 # Primo indice del ghiacciaio Columbia in Alaska nel 1986: NIR - RED
-dvi1 <- poyangJ$poyang_oli_2022191_lrg.1 - poyangJ$poyang_oli_2022191_lrg.2
+dvi1 <- poyangJ$poyang_oli_2022191_lrg.2 - poyangJ$poyang_oli_2022191_lrg.3
 plot(dvi1)
 cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
 plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
 
-dvi2 <- poyangA$poyang_oli_2022239_lrg.1 - poyangA$poyang_oli_2022239_lrg.2
+dvi2 <- poyangA$poyang_oli_2022239_lrg.2 - poyangA$poyang_oli_2022239_lrg.3
 plot(dvi2)
 cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
 plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
@@ -356,12 +381,12 @@ plot(difdvi, col=cldd)
 
 # NDVI= (NIR-RED) / (NIR+RED)
 # NDVI del Lago Poyang in July
-ndvi1 <- (dvi1) / (poyangJ$poyang_oli_2022191_lrg.1 + poyangJ$poyang_oli_2022191_lrg.2)
+ndvi1 <- (dvi1) / (poyangJ$poyang_oli_2022191_lrg.2 + poyangJ$poyang_oli_2022191_lrg.3)
 plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
 
 
 # NDVI del Lago Poyang in August
-ndvi2 <- (dvi2) / (poyangA$poyang_oli_2022239_lrg.1 + poyangA$poyang_oli_2022239_lrg.2)
+ndvi2 <- (dvi2) / (poyangA$poyang_oli_2022239_lrg.2 + poyangA$poyang_oli_2022239_lrg.3)
 plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
 
 par(mfrow=c(1,2))
