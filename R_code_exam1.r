@@ -1,5 +1,5 @@
                                                                         #Poyang Lake
-                                                                   ------------------------
+                                                                   
 #Poyang Lake, in China’s Jiangxi Province, routinely fluctuates in size between the winter and summer seasons. 
 #In winter, water levels on the lake in are typically low. Then, summer rains cause the country’s largest freshwater lake to swell as water flows in from the Yangtze River.
 #The lake has not swelled in the summer of 2022. 
@@ -18,7 +18,7 @@ library(ggplot2)                               # permette l'uso delle funzioni g
 library(gridExtra)                             # permette l'uso e creazione di griglie, tabelle e grafici
 library(rgdal)                                 # per le firme spettrali
 library(grid)                                  # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
-library (rasterdiv)
+library (rasterdiv)                            # Providing functions to calculate indices of diversity on numerical matrices based on information theory
 
 # Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
@@ -35,6 +35,16 @@ plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 par(mfrow=c(1,2))
 plotRGB(poyangJ, r=3, g=2, b=1, stretch="hist")
 plotRGB(poyangA, r=3, g=2, b=1, stretch="hist")
+
+#salvo per latex//////
+jpeg("plo1.jpg")
+plotRGB(poyangJ, r=3, g=2, b=1, stretch="hist")
+dev.off()
+
+jpeg("plo2.jpg")
+plotRGB(poyangA, r=3, g=2, b=1, stretch="hist")
+dev.off()
+///////////////////////////////////////////////
 
 #Crop immagini per maggior dettaglio
 ext1 <- c(600, 3000, 2000, 20000)        # coordinate (long ovest, long est, lat sud, lat nord)
@@ -56,7 +66,7 @@ dev.off()
 PJulyc <- brick("pjcropped.jpg")
 PAuguc <- brick("pacropped.jpg")
 
-#Plot immagini Crop
+#Plot immagini Croppate
 par(mfrow=c(1,2)) # 2 colonne e 2 righe
 plotRGB(PJulyc, r=1, g=2, b=3, stretch="lin")
 plotRGB(PAuguc, r=1, g=2, b=3, stretch="lin")
@@ -164,12 +174,7 @@ poyang19
 
 
 
-subset<-extent(c(338085, 573394, 338085, 3315538))
-B<-crop(poyang19,subset)
 
-#par(mfrow=c(2,1))
-#plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
-#plotRGB(P2019, r=4, g=3, b=2, stretch="lin")
 
 
 # Funzione plotRGB: crea plot con immagini sovrapposte
@@ -207,30 +212,17 @@ Poyang2019 <- brick("cro.jpg")
 Poyang19_5 <- brick("cro521.jpg")
 Poyang19_7 <- brick("cro764.jpg")
 
-ext1 <- c(0, 5179, 0, 5323)        # coordinate (long ovest, long est, lat sud, lat nord)
-p19cropped <- crop(poyang19, ext1)
-par(mfrow=c(2,2)) # 2 colonne e 2 righe
-plotRGB(p19cropped, r=1, g=2, b=3, stretch="lin")
-plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
-plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
-
-#meglio convertire la mappa più definita in quella meno definita, R fa un lavoro migliore
-P2019res <- resample(Poyang19_7, poyangJ)
-#scelgo di sovrascriverla all'immagine originale
-#primo argomento: img da ricampionare
-#secondo argomento: img su cui adattare il ricampionamento
-P2019res
-
-#BELLISSIMO
 par(mfrow=c(2,2)) # 2 colonne e 2 righe
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
-plotRGB(P2019res, r=1, g=2, b=3, stretch="lin")
+plotRGB(Poyang19_7, r=1, g=2, b=3, stretch="lin")
+
+
 ___________________________________________________________________________________________________________
 #effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
 set.seed(42)
 
-ClP3 <- unsuperClass(Poyang2019, nClasses=6)  
+ClP3 <- unsuperClass(Poyang19_7, nClasses=6)  
 colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
 
 # metto le immagini insieme per avere una mappa della situazione 
@@ -282,11 +274,14 @@ poyang2 <- raster("poyang_oli_2022239_lrg.jpg")# August
 #vogliamo fare la sottrazione tra il primo e l'ultimo dato 
 Pwater <- poyang1 - poyang2
 # creo una nuova colour palette 
-clb <- colorRampPalette(c("purple","pink","light blue", "white"))(100)
+clb <- colorRampPalette(c("red","pink","light blue", "white"))(100)à
+#jpeg("Pwater.jpg")
 plot(Pwater, col=clb) # zone rosse no acqua
+#dev.off()
 # usiamo level per avere una gamma di colori più dettagliata 
+#jpeg("Lwater.jpg")
 levelplot(Pwater, col.regions=clb, main="Water level drop between July 10 2022  and August 27 2022")
-
+#dev.off()
 
                                                             ------------------------ 
 # 2. Analisi delle componenti principali
@@ -295,10 +290,10 @@ levelplot(Pwater, col.regions=clb, main="Water level drop between July 10 2022  
 poyang1_pca <-rasterPCA(poyangJ) #?????????????
 summary(poyang1_pca$model)
 # Importance of components:
-#                             Comp.1     Comp.2      Comp.3
-# Standard deviation     109.2553346 59.9319584 27.67877126
-# Proportion of Variance   0.7325536  0.2204302  0.04701622
-# Cumulative Proportion    0.7325536  0.9529838  1.00000000
+#                           Comp.1     Comp.2      Comp.3
+#Standard deviation     85.3441855 32.9645973 18.52486015
+#Proportion of Variance  0.8359051  0.1247110  0.03938392
+#Cumulative Proportion   0.8359051  0.9606161  1.00000000
 
 plotRGB(poyang1_pca$map,r=1,g=2,b=3, stretch="Hist")
 plot(poyang1_pca$model) # per vedere il grafico
@@ -356,7 +351,7 @@ poyangJ
 poyangA
 #poyang_oli_2022239_lrg.1, poyang_oli_2022239_lrg.2, poyang_oli_2022239_lrg.3 
 
-# Primo indice del ghiacciaio Columbia in Alaska nel 1986: NIR - RED
+# DVI luglio NIR - RED
 dvi1 <- poyangJ$poyang_oli_2022191_lrg.2 - poyangJ$poyang_oli_2022191_lrg.3
 plot(dvi1)
 cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
@@ -503,6 +498,9 @@ plot(ClP2$map, col=colo)
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 
+jpeg("class2.jpg")
+plot(ClP2$map, col=colo)
+dev.off()
 
 #ora proviamo a calcolare la frequenza dei pixel di una certa classe.
 #lo possiamo fare con la funzion freq 
@@ -511,43 +509,43 @@ set.seed(42)
 plot(ClP1$map)
 freq(ClP1$map)  # freq è la funzione che mi va a calcolare la frequenza 
 #   value   count
-#[1,]     1 6182327 area urbana
-#[2,]     2 2505606 altra vegetazione
-#[3,]     3 3383026 altra vegetazione
-#[4,]     4 1237165 nuvole+ terreno nudo
-#[5,]     5 9394953 foresta
-#[6,]     6 4864740 acqua
+#[1,]     1 3471646 altra vegetazione
+#[2,]     2 9230548 foresta
+#[3,]     3 1145575  suolo nudo nuvole
+#[4,]     4 4843234 acqua
+#[5,]     5 2528980 altra vegetazione
+#[6,]     6 6347834 altra vegetazione
 
 set.seed(42)
 plot(ClP2$map)
 freq(ClP2$map)  
 #. value    count
-#[1,]     1  2437370 dune + nuvole
-#[2,]     2   934047 acqua
-#[3,]     3 12574240 foresta
-#[4,]     4  3701245 area urbana
-#[5,]     5  3099614  altra vegetazione
-#[6,]     6  4821301 altra vegetazione
+#[1,]     1  3098838 altra vegetazione
+#[2,]     2  3766096 altra vegetazione
+#[3,]     3  1007263 acqua
+#[4,]     4  12447007 foresta
+#[5,]     5  4851411  altra vegetazione
+#[6,]     6  2397202 dune + nuvole
 
 
 # ora calcoliamo la proporzione 
 #facciamo la somma dei valori 
-s1 <- 6182327 + 2505606 + 3383026 + 1237165 + 9394953 + 4864740
+s1 <- 3471646 + 9230548 + 1145575 + 4843234 + 2528980 + 6347834
 s1 # [1] 27567817, questo valore deve essere uguale per tutti 
 
-s2 <- 2437370 + 934047 + 12574240 + 3701245 + 3099614 + 4821301
+s2 <- 3098838 + 3766096 + 1007263 + 12447007 + 4851411 + 2397202
 s2 #[1] 27567817
 
 #per calcolare la proporzione facciamo la frequenza fratto il totale
 prop1 <- freq(ClP1$map)/ s1
 prop1
 #       value      count
-# [1,] 3.627418e-08 0.22425885
-# [2,] 7.254836e-08 0.09088881
-# [3,] 1.088225e-07 0.12271650
-# [4,] 1.450967e-07 0.04487715
-# [5,] 1.813709e-07 0.34079423
-# [6,] 2.176451e-07 0.17646446
+#[1,] 3.627418e-08 0.12593112
+#[2,] 7.254836e-08 0.33483057
+#[3,] 1.088225e-07 0.04155480
+#[4,] 1.450967e-07 0.17568435
+#[5,] 1.813709e-07 0.09173668
+#[6,] 2.176451e-07 0.23026248
 
 prop2 <- freq(ClP2$map) / s2
 prop2
@@ -561,46 +559,57 @@ prop2
 # [6,] 2.176451e-07 0.17488875
 
 
-perc_dunes_1 <- 1237165 * 100 / 27567817
+perc_dunes_1 <- 1145575 * 100 / 27567817
 perc_dunes_1
-#[1] 4.487715
-perc_wat_1 <- 4864740 * 100 / 27567817
+#[1] 4.15548
+perc_wat_1 <- 4843234 * 100 / 27567817
 perc_wat_1
-#[1] 17.64645
-perc_dunes_2 <- 2437370 * 100 / 27567817
+#[1] 17.56843
+perc_veg_1 <- (3471646 + 9230548 + 2528980 + 6347834) * 100 / 27567817
+perc_veg_1
+#[1] 78.27609
+perc_dunes_2 <- 2397202 * 100 / 27567817
 perc_dunes_2
-#[1] 8.84136
-perc_wat_2 <- 934047 * 100 / 27567817
+#[1] 8.695654
+perc_wat_2 <- 1007263 * 100 / 27567817
 perc_wat_2 
-#[1] 3.388179
+#[1] 3.653764
+perc_veg_2 <- (3098838 + 3766096 + 12447007 + 4851411) * 100 / 27567817
+perc_veg_2
+#[1] 87.65058
 
-cover <- c("acqua","dune")
-percentWD1 <- c(17.64645, 4.487715)
-percentWD2 <- c(3.388179, 8.84136)
+cover <- c("acqua","dune","vegetazione")
+July_10 <- c(17.64645, 4.487715, 78.27609)
+August_28 <- c(3.388179, 8.84136, 87.65058)
 
 
 # per crare il nostro data Frames uso la funzione data.frame
-percentages <- data.frame(cover, percentWD1, percentWD2)
+percentages <- data.frame(cover, July_10, August_28)
 percentages
-#cover percentW1 percentW2
-#1 acqua  17.64645  3.388179
-#2  dune   4.487715   8.841360
+# cover percentWD1 percentWD2
+#1       acqua  17.646450   3.388179
+#2        dune   4.487715   8.841360
+#3 vegetazione  78.276090  87.650580
 
-ggplot(percentages, aes(x=cover, y=percentWD1, color=cover)) + geom_bar(stat="identity", fill="violet")
-ggplot(percentages, aes(x=cover, y=percentWD2, color=cover)) + geom_bar(stat="identity", fill="yellow")
+
+v<-ggplot(percentages, aes(x=cover, y=July_10, color=cover)) + geom_bar(stat="identity", fill="violet")
+y<-ggplot(percentages, aes(x=cover, y=August_28, color=cover)) + geom_bar(stat="identity", fill="yellow")
+grid.arrange(v, y, ncol=2)
+
 
 # metto in un unico grafico tutte le date posizionandolo in orizzontale
-C1 <- ggplot(percentages, aes(x=cover, y=percentWD1, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
+C1 <- ggplot(percentages, aes(x=cover, y=July_10, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
 C1 + coord_flip()
-C2 <- ggplot(percentages, aes(x=cover, y=percentWD2, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
+C2 <- ggplot(percentages, aes(x=cover, y=August_28, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
 C2 + coord_flip()
 
-grid.arrange(C1 + coord_flip(), C2 + coord_flip(), nrow=2)
+barsgraph <-grid.arrange(C1 + coord_flip(), C2 + coord_flip(), nrow=2)
+ggsave("bars.jpg", barsgraph) 
 
 # uso l funzione grid.arrange per mettere i grafici in una pagina  della gridextra già installato
-grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + coord_polar(theta = "x", direction=1 )) 
+circlegraph <- grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + coord_polar(theta = "x", direction=1 )) 
          
-
+ggsave("grid.arrange.jpg", circlegraph) 
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
 ______________________
 
