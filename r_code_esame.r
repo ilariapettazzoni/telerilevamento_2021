@@ -18,7 +18,7 @@ library(ggplot2)                               # permette l'uso delle funzioni g
 library(gridExtra)                             # permette l'uso e creazione di griglie, tabelle e grafici
 library(rgdal)                                 # per le firme spettrali
 library(grid)                                  # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
-library (rasterdiv)                            # Providing functions to calculate indices of diversity on numerical matrices based on information theory
+library (rasterdiv)                            # Per calcolare indici di diversità e matrici numeriche
 
 # Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
@@ -60,29 +60,40 @@ PJulyc <- brick("pjcropped.jpg")
 PAuguc <- brick("pacropped.jpg")
 
 #Plot immagini Croppate
-par(mfrow=c(1,2)) # 2 colonne e 2 righe
+par(mfrow=c(1,2)) 
 plotRGB(PJulyc, r=1, g=2, b=3, stretch="lin")
 plotRGB(PAuguc, r=1, g=2, b=3, stretch="lin")
 
+#LEVELPLOT
+# ora applichiamo l'algebra applicata alle matrici 
+#utilizzo raster perchè non mi interessa ad avere le 3 bande divise ma una immagine con un'unica banda 
+poyang1 <- raster("poyang_oli_2022191_lrg.jpg") # July
+poyang2 <- raster("poyang_oli_2022239_lrg.jpg")# August
 
+#vogliamo fare la sottrazione tra il primo e l'ultimo dato 
+Pwater <- poyang1 - poyang2
+# creo una nuova colour palette 
+clb <- colorRampPalette(c("red","pink","light blue", "white"))(100)
+#jpeg("Pwater.jpg")
+plot(Pwater, col=clb) # zone rosse no acqua
+#dev.off()
+# usiamo level per avere una gamma di colori più dettagliata 
+#jpeg("Lwater.jpg")
+levelplot(Pwater, col.regions=clb, main="Water level drop between July 10 2022  and August 27 2022")
+#dev.off()
 
 # UNSUPERVISED CLASSIFICATION
 #si chiama così perchè è il software che scegli random un campione di pixel nell'immagine da dividere in classi
 
 set.seed(42)
-#la divisioni in classi è random, nel senso che, anche se il numero è sempre 4, 
-#una volta la classe 1 è la foresta e la classe 2 la parte agricola ma se chiudo R e rifaccio questa operazione si possono invertire.
-#per evitare questa cosa esiste la funzione set.seed() che ci permette di assegnare un numero al risultato 
-#(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
 
-
-#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
+#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con vegetazione, con acqua e "altro"
 ClP1 <- unsuperClass(poyangJ, nClasses=6)  
 ClP2 <- unsuperClass(poyangA, nClasses=6)  
 colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
 
 # metto le immagini insieme per avere una mappa della situazione 
-par(mfrow=c(2,2)) # 2 colonne e 2 righe
+par(mfrow=c(2,2)) 
 plot(ClP1$map, col=colo)
 plot(ClP2$map, col=colo)
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
@@ -92,30 +103,29 @@ jpeg("class2.jpg")
 plot(ClP2$map, col=colo)
 dev.off()
 
-#ora proviamo a calcolare la frequenza dei pixel di una certa classe.
-#lo possiamo fare con la funzion freq 
+#Calcolo la frequenza dei pixel delle classi
 
 set.seed(42)
 plot(ClP1$map)
-freq(ClP1$map)  # freq è la funzione che mi va a calcolare la frequenza 
+freq(ClP1$map)  
 #   value   count
-#[1,]     1 3471646 altra vegetazione
-#[2,]     2 9230548 foresta
-#[3,]     3 1145575  suolo nudo nuvole
-#[4,]     4 4843234 acqua
-#[5,]     5 2528980 altra vegetazione
-#[6,]     6 6347834 altra vegetazione
+#[1,]     1 3471646 - vegetazione, altro
+#[2,]     2 9230548 - foresta
+#[3,]     3 1145575 - letto + nuvole
+#[4,]     4 4843234 - acqua
+#[5,]     5 2528980 - vegetazione, altro
+#[6,]     6 6347834 - vegetazione, altro
 
 set.seed(42)
 plot(ClP2$map)
 freq(ClP2$map)  
 #. value    count
-#[1,]     1  3098838 altra vegetazione
-#[2,]     2  3766096 altra vegetazione
-#[3,]     3  1007263 acqua
-#[4,]     4  12447007 foresta
-#[5,]     5  4851411  altra vegetazione
-#[6,]     6  2397202 dune + nuvole
+#[1,]     1  3098838 - vegetazione, altro
+#[2,]     2  3766096 - vegetazione, altro
+#[3,]     3  1007263 - acqua
+#[4,]     4 12447007 - foresta
+#[5,]     5  4851411 - vegetazione, altro
+#[6,]     6  2397202 - letto + nuvole
 
 
 # ora calcoliamo la proporzione 
@@ -149,8 +159,8 @@ prop2
 # [6,] 2.176451e-07 0.17488875
 
 
-perc_dunes_1 <- 1145575 * 100 / 27567817
-perc_dunes_1
+perc_sand_1 <- 1145575 * 100 / 27567817
+perc_sand_1
 #[1] 4.15548
 perc_wat_1 <- 4843234 * 100 / 27567817
 perc_wat_1
@@ -158,8 +168,8 @@ perc_wat_1
 perc_veg_1 <- (3471646 + 9230548 + 2528980 + 6347834) * 100 / 27567817
 perc_veg_1
 #[1] 78.27609
-perc_dunes_2 <- 2397202 * 100 / 27567817
-perc_dunes_2
+perc_sand_2 <- 2397202 * 100 / 27567817
+perc_sand_2
 #[1] 8.695654
 perc_wat_2 <- 1007263 * 100 / 27567817
 perc_wat_2 
@@ -168,7 +178,7 @@ perc_veg_2 <- (3098838 + 3766096 + 12447007 + 4851411) * 100 / 27567817
 perc_veg_2
 #[1] 87.65058
 
-cover <- c("acqua","dune","vegetazione")
+cover <- c("acqua","sabbia","vegetazione")
 July_10 <- c(17.64645, 4.487715, 78.27609)
 August_28 <- c(3.388179, 8.84136, 87.65058)
 
@@ -176,7 +186,7 @@ August_28 <- c(3.388179, 8.84136, 87.65058)
 # per crare il nostro data Frames uso la funzione data.frame
 percentages <- data.frame(cover, July_10, August_28)
 percentages
-# cover percentWD1 percentWD2
+#        cover July_10 August_28
 #1       acqua  17.646450   3.388179
 #2        dune   4.487715   8.841360
 #3 vegetazione  78.276090  87.650580
@@ -201,3 +211,71 @@ circlegraph <- grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + co
          
 ggsave("grid.arrange.jpg", circlegraph) 
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
+_________________________________________________________
+
+# Spectral Indices
+
+# La funzione spectralIndices permette di calcolare tutti gli indici
+# b1=NIR, b2=rosso, b3=verde
+
+#july
+spPo1<- spectralIndices(poyangJ, swir1=1, nir=2, red=3) #colori associati al N° della banda
+# Cambio i colori con colorRampPalette
+cl <- colorRampPalette(c('purple','yellow','light pink','orange'))(100)
+# Nuovo plot col cambio di colori
+plot(spPo1, col=cl)
+
+#august
+spPo2 <- spectralIndices(poyangA, swir1=1, nir=2, red=3) #colori associati al N° della banda
+# Nuovo plot col cambio di colori
+plot(spPo2, col=cl)
+
+# guardo come si chiamano le bande del NIR e del ROSSO. 
+poyangJ
+# poyang_oli_2022191_lrg.1, poyang_oli_2022191_lrg.2, poyang_oli_2022191_lrg.3 
+poyangA
+#poyang_oli_2022239_lrg.1,
+poyang_oli_2022239_lrg.2, poyang_oli_2022239_lrg.3 
+
+#1. DVI luglio NIR - RED
+dvi1 <- poyangJ$poyang_oli_2022191_lrg.2 - poyangJ$poyang_oli_2022191_lrg.3
+plot(dvi1)
+cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
+plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
+
+dvi2 <- poyangA$poyang_oli_2022239_lrg.2 - poyangA$poyang_oli_2022239_lrg.3
+plot(dvi2)
+cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
+plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
+
+# Confronto il tutto per far emergere le differenze 
+par(mfrow=c(1,2))
+plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
+plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
+
+difdvi <- dvi1 - dvi2
+cldd <- colorRampPalette(c('blue','white','red'))(100)
+plot(difdvi, col=cldd)
+
+
+# 2. NDVI - Normalized Difference Vegetation Index
+
+# NDVI= (NIR-RED) / (NIR+RED)
+# NDVI del Lago Poyang in July
+ndvi1 <- (dvi1) / (poyangJ$poyang_oli_2022191_lrg.2 + poyangJ$poyang_oli_2022191_lrg.3)
+plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
+
+
+# NDVI del Lago Poyang in August
+ndvi2 <- (dvi2) / (poyangA$poyang_oli_2022239_lrg.2 + poyangA$poyang_oli_2022239_lrg.3)
+plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
+
+par(mfrow=c(1,2))
+plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
+plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
+
+# Differenza del NDVI
+difndvi <- ndvi1 - ndvi2
+plot(difndvi, col=cldd)
+
+
