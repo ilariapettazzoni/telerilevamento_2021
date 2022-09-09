@@ -213,6 +213,160 @@ ggsave("grid.arrange.jpg", circlegraph)
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
 _________________________________________________________
 
+
+
+#IMPORTO IMMAGINE 2019
+
+# Importo i file tutti insieme (invece che singolarmente) utilizzando la funzione stack
+# Funzione list.files: crea lista di file per la funzione lapply 
+
+
+plist <- list.files(pattern="LC08")     # pattern = è la scritta in comune in ogni file
+
+plist                                   # per ottenre le informazioni sui file 
+      #[1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
+      #[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
+      #[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
+      #[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
+      # Funzione lapply: applica alla lista dei file una funzione (raster) 
+import <- lapply(plist,raster)
+
+import
+      # [[1]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
+      # values     : 0, 65535  (min, max)
+
+
+      # [[2]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
+      # values     : 0, 65535  (min, max)
+
+
+      # [[3]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
+      # values     : 0, 65535  (min, max)
+
+
+      # # [[4]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
+      # values     : 0, 65535  (min, max)
+
+
+      # [[5]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
+      # values     : 0, 65535  (min, max)
+
+
+      # [[6]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
+      # values     : 0, 65535  (min, max)
+
+
+      # [[7]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
+      # values     : 0, 65535  (min, max)
+
+
+
+# Funzione stack: raggruppa e rinomina, in un unico pacchetto, i file raster separati
+poyang19<- stack(import)
+# Funzione per avere le info sul file
+poyang19
+      #lass      : RasterStack 
+      #dimensions : 7811, 7671, 59918181, 7  (nrow, ncol, ncell, nlayers)
+      #resolution : 30, 30  (x, y)
+      #extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      #crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      #names      : LC08_L2SP//2_T1_SR_B1, LC08_L2SP//2_T1_SR_B2, LC08_L2SP//2_T1_SR_B3, LC08_L2SP//2_T1_SR_B4, LC08_L2SP//2_T1_SR_B5, LC08_L2SP//2_T1_SR_B6, LC08_L2SP//2_T1_SR_B7 
+      #min values :                     0,                     0,                     0,                     0,                     0,                     0,                     0 
+      #max values :                 65535,                 65535,                 65535,                 65535,                 65535,                 65535,                 65535 
+
+
+# Funzione plotRGB: crea plot con immagini sovrapposte
+plotRGB(poyang19, r=4, g=3, b=2, stretch="lin")
+             
+#Crop con drawExtent() ////////////////// Non lanciare si R
+# after running the following line, click on the map twice
+e <- drawExtent(show=TRUE, col="red")
+
+# after running the following line, click on the map twice
+cro<-crop(poyang19, e)
+plotRGB(cro, r=1, g=2, b=3, stretch="lin")
+
+#salva immagine 2019 true colors
+jpeg("cro.jpg")
+plotRGB(cro, r=3, g=2, b=1, stretch="lin")
+dev.off()
+
+
+#salvo e importo immagine 521
+jpeg("cro521.jpg")
+plotRGB(cro, r=5, g=2, b=1, stretch="lin")
+dev.off()
+
+#salvo e importo immagine 764
+jpeg("cro764.jpg")
+plotRGB(cro, r=7, g=6, b=4, stretch="lin")
+dev.off()
+
+#////////////////////////////////////////////////////
+
+#Importo immagioni croppate
+Poyang2019 <- brick("cro.jpg")
+Poyang19_5 <- brick("cro521.jpg")
+Poyang19_7 <- brick("cro764.jpg")
+
+par(mfrow=c(2,2)) # plotto 2 colonne e 2 righe
+plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
+plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
+plotRGB(Poyang19_7, r=1, g=2, b=3, stretch="lin")
+#____________________________________________________________________
+
+
+
+
 # Spectral Indices
 
 # La funzione spectralIndices permette di calcolare tutti gli indici
