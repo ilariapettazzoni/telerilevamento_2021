@@ -12,7 +12,9 @@
 #marking what the center called the start of the lake’s “dry season.” 
 #That low came roughly 100 days earlier than usual. It was the earliest date that the water dropped to such a low mark since records were first kept in 1951.
 
-
+# Le immagini sono state scaricate da: 
+#https://earthobservatory.nasa.gov/images/150285/parched-poyang-lake
+# https://earthexplorer.usgs.gov
 
 # Caricamento delle library necessarie al funzionamento dei codici :
 library(raster)                                # permette l'utilizzo dei raster e funzioni annesse
