@@ -1,4 +1,4 @@
-                    #Poyang Lake
+                                                         #Poyang Lake
                                                                    
 #Poyang Lake, in China’s Jiangxi Province, routinely fluctuates in size between the winter and summer seasons. 
 #In winter, water levels on the lake in are typically low. Then, summer rains cause the country’s largest freshwater lake to swell as water flows in from the Yangtze River.
@@ -11,7 +11,8 @@
 #High temperatures and a lack of rain caused the lake to drop rapidly. By August 6, water levels had declined to 11.99 meters (39.33 feet), 
 #marking what the center called the start of the lake’s “dry season.” 
 #That low came roughly 100 days earlier than usual. It was the earliest date that the water dropped to such a low mark since records were first kept in 1951.
-                                                                   ------------------------
+
+
 
 # Caricamento delle library necessarie al funzionamento dei codici :
 library(raster)                                # permette l'utilizzo dei raster e funzioni annesse
