@@ -18,7 +18,7 @@ library(ggplot2)                               # permette l'uso delle funzioni g
 library(gridExtra)                             # permette l'uso e creazione di griglie, tabelle e grafici
 library(rgdal)                                 # per le firme spettrali
 library(grid)                                  # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
-library (rasterdiv)                            # Providing functions to calculate indices of diversity on numerical matrices based on information theory
+library (rasterdiv)                            # per calcolare indici di diversità e matrici numeriche 
 
 # Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
@@ -80,90 +80,90 @@ plotRGB(PAuguc, r=1, g=2, b=3, stretch="lin")
 
 plist <- list.files(pattern="LC08")     # pattern = è la scritta in comune in ogni file
 
-plist                                     # per ottenre le informazioni sui file 
-# [1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
-#[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
-#[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
-#[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
-# Funzione lapply: applica alla lista dei file una funzione (raster) 
+plist                                   # per ottenre le informazioni sui file 
+      #[1] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF"
+      #[3] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF"
+      #[5] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF" "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF"
+      #[7] "LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF"
+      # Funzione lapply: applica alla lista dei file una funzione (raster) 
 import <- lapply(plist,raster)
 
 import
-# [[1]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
-# values     : 0, 65535  (min, max)
+      # [[1]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B1 
+      # values     : 0, 65535  (min, max)
 
 
-# [[2]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
-# values     : 0, 65535  (min, max)
+      # [[2]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B2 
+      # values     : 0, 65535  (min, max)
 
 
-# [[3]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
-# values     : 0, 65535  (min, max)
+      # [[3]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B3 
+      # values     : 0, 65535  (min, max)
 
 
-# # [[4]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
-# values     : 0, 65535  (min, max)
+      # # [[4]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B4 
+      # values     : 0, 65535  (min, max)
 
 
-# [[5]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
-# values     : 0, 65535  (min, max)
+      # [[5]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B5 
+      # values     : 0, 65535  (min, max)
 
 
-# [[6]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
-# values     : 0, 65535  (min, max)
+      # [[6]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B6 
+      # values     : 0, 65535  (min, max)
 
 
-# [[7]]
-# class      : RasterLayer 
-# dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
-# resolution : 30, 30  (x, y)
-# extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
-# crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
-# source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
-# names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
-# values     : 0, 65535  (min, max)
+      # [[7]]
+      # class      : RasterLayer 
+      # dimensions : 7811, 7671, 59918181  (nrow, ncol, ncell)
+      # resolution : 30, 30  (x, y)
+      # extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      # crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      # source     : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7.TIF 
+      # names      : LC08_L2SP_121040_20220811_20220818_02_T1_SR_B7 
+      # values     : 0, 65535  (min, max)
 
 
 
@@ -171,10 +171,14 @@ import
 poyang19<- stack(import)
 # Funzione per avere le info sul file
 poyang19
-
-
-
-
+      #lass      : RasterStack 
+      #dimensions : 7811, 7671, 59918181, 7  (nrow, ncol, ncell, nlayers)
+      #resolution : 30, 30  (x, y)
+      #extent     : 338085, 568215, 3075885, 3310215  (xmin, xmax, ymin, ymax)
+      #crs        : +proj=utm +zone=50 +datum=WGS84 +units=m +no_defs 
+      #names      : LC08_L2SP//2_T1_SR_B1, LC08_L2SP//2_T1_SR_B2, LC08_L2SP//2_T1_SR_B3, LC08_L2SP//2_T1_SR_B4, LC08_L2SP//2_T1_SR_B5, LC08_L2SP//2_T1_SR_B6, LC08_L2SP//2_T1_SR_B7 
+      #min values :                     0,                     0,                     0,                     0,                     0,                     0,                     0 
+      #max values :                 65535,                 65535,                 65535,                 65535,                 65535,                 65535,                 65535 
 
 
 # Funzione plotRGB: crea plot con immagini sovrapposte
@@ -187,7 +191,6 @@ e <- drawExtent(show=TRUE, col="red")
 # after running the following line, click on the map twice
 cro<-crop(poyang19, e)
 plotRGB(cro, r=1, g=2, b=3, stretch="lin")
-
 
 #salva immagine 2019 true colors
 jpeg("cro.jpg")
@@ -207,12 +210,12 @@ dev.off()
 
 #////////////////////////////////////////////////////
 
-#importo immagioni croppate
+#Importo immagioni croppate
 Poyang2019 <- brick("cro.jpg")
 Poyang19_5 <- brick("cro521.jpg")
 Poyang19_7 <- brick("cro764.jpg")
 
-par(mfrow=c(2,2)) # 2 colonne e 2 righe
+par(mfrow=c(2,2)) # plotto 2 colonne e 2 righe
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 plotRGB(Poyang19_7, r=1, g=2, b=3, stretch="lin")
@@ -274,7 +277,7 @@ poyang2 <- raster("poyang_oli_2022239_lrg.jpg")# August
 #vogliamo fare la sottrazione tra il primo e l'ultimo dato 
 Pwater <- poyang1 - poyang2
 # creo una nuova colour palette 
-clb <- colorRampPalette(c("red","pink","light blue", "white"))(100)à
+clb <- colorRampPalette(c("red","pink","light blue", "white"))(100)
 #jpeg("Pwater.jpg")
 plot(Pwater, col=clb) # zone rosse no acqua
 #dev.off()
@@ -329,68 +332,7 @@ C <- grid.arrange(Co1986, Co1995, nrow=1, top = textGrob("Water level drop betwe
 ggsave("grid.arrange.jpg",C) 
 
                                                               -----------------------
-# Spectral Indices
-
-# La funzione spectralIndices permette di calcolare tutti gli indici
-# b1=NIR, b2=rosso, b3=verde
-# Immagine del ghiacciaio Columbia in Alaska nel 1986 
-spPo1<- spectralIndices(poyangJ, green=3, red=2, nir=1) #colori associati al N° della banda
-# Cambio i colori con colorRampPalette
-cl <- colorRampPalette(c('purple','yellow','light pink','orange'))(100)
-# Nuovo plot col cambio di colori
-plot(spPo1, col=cl)
-
-# Immagine del ghiacciaio Columbia in Alaska nel 1995 
-spPo2 <- spectralIndices(poyangA, green=3, red=2, nir=1) #colori associati al N° della banda
-# Nuovo plot col cambio di colori
-plot(spPo2, col=cl)
-
-# guardo come si chiamano le bande del NIR e del ROSSO. 
-poyangJ
-# poyang_oli_2022191_lrg.1, poyang_oli_2022191_lrg.2, poyang_oli_2022191_lrg.3 
-poyangA
-#poyang_oli_2022239_lrg.1, poyang_oli_2022239_lrg.2, poyang_oli_2022239_lrg.3 
-
-# DVI luglio NIR - RED
-dvi1 <- poyangJ$poyang_oli_2022191_lrg.2 - poyangJ$poyang_oli_2022191_lrg.3
-plot(dvi1)
-cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
-plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
-
-dvi2 <- poyangA$poyang_oli_2022239_lrg.2 - poyangA$poyang_oli_2022239_lrg.3
-plot(dvi2)
-cld <- colorRampPalette(c('yellow','purple','green','light blue'))(100)
-plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
-
-# Confronto il tutto per far emergere le differenze 
-par(mfrow=c(1,2))
-plot(dvi1, col=cld, main="DVI of Poyang Lake in July")
-plot(dvi2, col=cld, main="DVI of Poyang Lake in August")
-
-difdvi <- dvi1 - dvi2
-cldd <- colorRampPalette(c('blue','white','red'))(100)
-plot(difdvi, col=cldd)
-
-
-# 2. NDVI - Normalized Difference Vegetation Index
-
-# NDVI= (NIR-RED) / (NIR+RED)
-# NDVI del Lago Poyang in July
-ndvi1 <- (dvi1) / (poyangJ$poyang_oli_2022191_lrg.2 + poyangJ$poyang_oli_2022191_lrg.3)
-plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
-
-
-# NDVI del Lago Poyang in August
-ndvi2 <- (dvi2) / (poyangA$poyang_oli_2022239_lrg.2 + poyangA$poyang_oli_2022239_lrg.3)
-plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
-
-par(mfrow=c(1,2))
-plot(ndvi1, col=cld, main="NDVI of Poyang Lake in July")
-plot(ndvi2, col=cld, main="NDVI of Poyang Lake in August")
-
-# Differenza del NDVI
-difndvi <- ndvi1 - ndvi2
-plot(difndvi, col=cldd)
+ 
 
 #.....................................................................................................................................
 
@@ -475,141 +417,4 @@ labs(x="band", y="reflectance")
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------------
-
-# unsupervised classification
-#si chiama così perchè è il software che scegli random un campione di pixel nell'immagine da dividere in classi
-
-set.seed(42)
-#la divisioni in classi è random, nel senso che, anche se il numero è sempre 4, 
-#una volta la classe 1 è la foresta e la classe 2 la parte agricola ma se chiudo R e rifaccio questa operazione si possono invertire.
-#per evitare questa cosa esiste la funzione set.seed() che ci permette di assegnare un numero al risultato 
-#(nel nostro caso la suddivisione in classi) della funzione così che non cambi mai.
-
-
-#effettuiamo una categorizzazione in 6 classi di colore per distinguere le zone con ghiaccio, con acqua e "altro"
-ClP1 <- unsuperClass(poyangJ, nClasses=6)  
-ClP2 <- unsuperClass(poyangA, nClasses=6)  
-colo <- colorRampPalette(c('yellow','orange','red','green','blue','purple'))(100) 
-
-# metto le immagini insieme per avere una mappa della situazione 
-par(mfrow=c(2,2)) # 2 colonne e 2 righe
-plot(ClP1$map, col=colo)
-plot(ClP2$map, col=colo)
-plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
-plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
-
-jpeg("class2.jpg")
-plot(ClP2$map, col=colo)
-dev.off()
-
-#ora proviamo a calcolare la frequenza dei pixel di una certa classe.
-#lo possiamo fare con la funzion freq 
-
-set.seed(42)
-plot(ClP1$map)
-freq(ClP1$map)  # freq è la funzione che mi va a calcolare la frequenza 
-#   value   count
-#[1,]     1 3471646 altra vegetazione
-#[2,]     2 9230548 foresta
-#[3,]     3 1145575  suolo nudo nuvole
-#[4,]     4 4843234 acqua
-#[5,]     5 2528980 altra vegetazione
-#[6,]     6 6347834 altra vegetazione
-
-set.seed(42)
-plot(ClP2$map)
-freq(ClP2$map)  
-#. value    count
-#[1,]     1  3098838 altra vegetazione
-#[2,]     2  3766096 altra vegetazione
-#[3,]     3  1007263 acqua
-#[4,]     4  12447007 foresta
-#[5,]     5  4851411  altra vegetazione
-#[6,]     6  2397202 dune + nuvole
-
-
-# ora calcoliamo la proporzione 
-#facciamo la somma dei valori 
-s1 <- 3471646 + 9230548 + 1145575 + 4843234 + 2528980 + 6347834
-s1 # [1] 27567817, questo valore deve essere uguale per tutti 
-
-s2 <- 3098838 + 3766096 + 1007263 + 12447007 + 4851411 + 2397202
-s2 #[1] 27567817
-
-#per calcolare la proporzione facciamo la frequenza fratto il totale
-prop1 <- freq(ClP1$map)/ s1
-prop1
-#       value      count
-#[1,] 3.627418e-08 0.12593112
-#[2,] 7.254836e-08 0.33483057
-#[3,] 1.088225e-07 0.04155480
-#[4,] 1.450967e-07 0.17568435
-#[5,] 1.813709e-07 0.09173668
-#[6,] 2.176451e-07 0.23026248
-
-prop2 <- freq(ClP2$map) / s2
-prop2
-
-#  value      count
-# [1,] 3.627418e-08 0.08841360
-# [2,] 7.254836e-08 0.03388179
-# [3,] 1.088225e-07 0.45612027
-# [4,] 1.450967e-07 0.13425963
-# [5,] 1.813709e-07 0.11243596
-# [6,] 2.176451e-07 0.17488875
-
-
-perc_dunes_1 <- 1145575 * 100 / 27567817
-perc_dunes_1
-#[1] 4.15548
-perc_wat_1 <- 4843234 * 100 / 27567817
-perc_wat_1
-#[1] 17.56843
-perc_veg_1 <- (3471646 + 9230548 + 2528980 + 6347834) * 100 / 27567817
-perc_veg_1
-#[1] 78.27609
-perc_dunes_2 <- 2397202 * 100 / 27567817
-perc_dunes_2
-#[1] 8.695654
-perc_wat_2 <- 1007263 * 100 / 27567817
-perc_wat_2 
-#[1] 3.653764
-perc_veg_2 <- (3098838 + 3766096 + 12447007 + 4851411) * 100 / 27567817
-perc_veg_2
-#[1] 87.65058
-
-cover <- c("acqua","dune","vegetazione")
-July_10 <- c(17.64645, 4.487715, 78.27609)
-August_28 <- c(3.388179, 8.84136, 87.65058)
-
-
-# per crare il nostro data Frames uso la funzione data.frame
-percentages <- data.frame(cover, July_10, August_28)
-percentages
-# cover percentWD1 percentWD2
-#1       acqua  17.646450   3.388179
-#2        dune   4.487715   8.841360
-#3 vegetazione  78.276090  87.650580
-
-
-v<-ggplot(percentages, aes(x=cover, y=July_10, color=cover)) + geom_bar(stat="identity", fill="violet")
-y<-ggplot(percentages, aes(x=cover, y=August_28, color=cover)) + geom_bar(stat="identity", fill="yellow")
-grid.arrange(v, y, ncol=2)
-
-
-# metto in un unico grafico tutte le date posizionandolo in orizzontale
-C1 <- ggplot(percentages, aes(x=cover, y=July_10, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
-C1 + coord_flip()
-C2 <- ggplot(percentages, aes(x=cover, y=August_28, fill=cover)) + geom_bar(stat="identity") + theme_minimal()
-C2 + coord_flip()
-
-barsgraph <-grid.arrange(C1 + coord_flip(), C2 + coord_flip(), nrow=2)
-ggsave("bars.jpg", barsgraph) 
-
-# uso l funzione grid.arrange per mettere i grafici in una pagina  della gridextra già installato
-circlegraph <- grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + coord_polar(theta = "x", direction=1 )) 
-         
-ggsave("grid.arrange.jpg", circlegraph) 
-# la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
-______________________
 
