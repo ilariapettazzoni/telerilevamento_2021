@@ -5,9 +5,12 @@
 #The lake has not swelled in the summer of 2022. 
 #A prolonged heat wave and drought across much of the Yangtze River Basin dried the lake out early and pushed water levels to lows not seen in decades.
 
-#The Operational Land Imager (OLI) on Landsat 8 acquired these pairs of images on July 10, 2022 (left images), and August 27, 2022 (right images). 
+#The Operational Land Imager (OLI) on Landsat 8 acquired these pairs of images on July 10, 2022 (left images), and August 28, 2022 (right images). 
 #The images are composites, and combine OLI observations of shortwave infrared, near infrared, and visible light.
 
+#High temperatures and a lack of rain caused the lake to drop rapidly. By August 6, water levels had declined to 11.99 meters (39.33 feet), 
+#marking what the center called the start of the lake’s “dry season.” 
+#That low came roughly 100 days earlier than usual. It was the earliest date that the water dropped to such a low mark since records were first kept in 1951.
                                                                    ------------------------
 
 # Caricamento delle library necessarie al funzionamento dei codici :
@@ -18,7 +21,7 @@ library(ggplot2)                               # permette l'uso delle funzioni g
 library(gridExtra)                             # permette l'uso e creazione di griglie, tabelle e grafici
 library(rgdal)                                 # per le firme spettrali
 library(grid)                                  # Il pacchetto grid in R implementa le funzioni grafiche primitive che sono alla base del sistema di plottaggio ggplot2
-library (rasterdiv)                            # Per calcolare indici di diversità e matrici numeriche
+library(rasterdiv)                             # Per calcolare indici di diversità e matrici numeriche
 
 # Settaggio della working directory 
 setwd("/Users/ilari/Desktop/lab/Esame/")
@@ -127,7 +130,7 @@ freq(ClP2$map)
 #[5,]     5  4851411 - vegetazione, altro
 #[6,]     6  2397202 - letto + nuvole
 
-
+#PERCENTAGES
 # ora calcoliamo la proporzione 
 #facciamo la somma dei valori 
 s1 <- 3471646 + 9230548 + 1145575 + 4843234 + 2528980 + 6347834
@@ -211,8 +214,6 @@ circlegraph <- grid.arrange(C1 + coord_polar(theta = "x", direction=1 ), C2 + co
          
 ggsave("grid.arrange.jpg", circlegraph) 
 # la funzione coord_polard mi permette di visualizzare il grafico in modo circolare e particolare
-_________________________________________________________
-
 
 
 #IMPORTO IMMAGINE 2019
@@ -362,12 +363,9 @@ par(mfrow=c(2,2)) # plotto 2 colonne e 2 righe
 plotRGB(poyangJ, r=1, g=2, b=3, stretch="lin")
 plotRGB(poyangA, r=1, g=2, b=3, stretch="lin")
 plotRGB(Poyang19_7, r=1, g=2, b=3, stretch="lin")
-#____________________________________________________________________
 
 
-
-
-# Spectral Indices
+# SPECTRAL INDICES
 
 # La funzione spectralIndices permette di calcolare tutti gli indici
 # b1=NIR, b2=rosso, b3=verde
