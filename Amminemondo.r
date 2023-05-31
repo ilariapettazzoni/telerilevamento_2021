@@ -2,12 +2,16 @@ library(tidyverse)  # data manipulation
 library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
 
-df <- USArrests
-df <- na.omit(df)
-#To remove any missing value that might be present in the data, type this:
 
-df <- scale(df)
-head(df)
+Setwd("/Users/ilari/Desktop/")
+#df <- USArrests
+#df <- read.csv("provaclusters.csv")
+> df <- read.csv("provaclustersa.csv", header = T, sep=";", stringsAsFactors=F)
+> 
+> #read.table(file.choose("provaclusters.csv"), header=T, sep=";")
+> df <- na.omit(df)
+> head(df)
+
 ##                Murder   Assault   UrbanPop         Rape
 ## Alabama    1.24256408 0.7828393 -0.5209066 -0.003416473
 ## Alaska     0.50786248 1.1068225 -1.2117642  2.484202941
