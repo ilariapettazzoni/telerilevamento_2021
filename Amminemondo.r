@@ -3,14 +3,17 @@ library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
 
 
-Setwd("/Users/ilari/Desktop/")
+setwd("/Users/ilari/Desktop/")
 #df <- USArrests
 #df <- read.csv("provaclusters.csv")
-> df <- read.csv("provaclustersa.csv", header = T, sep=";", stringsAsFactors=F)
-> 
-> #read.table(file.choose("provaclusters.csv"), header=T, sep=";")
-> df <- na.omit(df)
-> head(df)
+df <- read.csv("provaclustersa.csv", header = T, sep=";", stringsAsFactors=F)
+ 
+#read.table(file.choose("provaclusters.csv"), header=T, sep=";")
+ df <- na.omit(df)
+
+df <- scale(df)
+head(df)
+
 
 ##                Murder   Assault   UrbanPop         Rape
 ## Alabama    1.24256408 0.7828393 -0.5209066 -0.003416473
@@ -23,7 +26,7 @@ Setwd("/Users/ilari/Desktop/")
 distance <- get_dist(df)
 fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
 
-k2 <- kmeans(df, centers = 2, nstart = 25)
+k2 <- kmeans(df, centers = 12, nstart = 1)
 str(k2)
 ## List of 9
 ##  $ cluster     : Named int [1:50] 1 1 1 2 1 1 2 2 1 1 ...
