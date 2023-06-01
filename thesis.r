@@ -6,11 +6,12 @@ library(rgdal)
 setwd("/Users/ilari/Desktop/")
 
 data2 <- read.table(file.choose("condambrid.csv"), header=T, sep=";")
+ggpairs(data2)
 matrix <- ggpairs(data2)
 ggsave("corr.jpg", matrix, width = 15, height = 7) 
-ggsave("mtcars.pdf", )
+ggsave("mtcars.pdf")
 
-ggpairs(data2[3:5], aes(color = Altitudine, alpha = 0.5), lower = list(combo = "count"))
+#ggpairs(data2[3:5], aes(color = Altitudine, alpha = 0.5), lower = list(combo = "count"))
 
 
 setwd("/Users/ilari/Desktop/")
