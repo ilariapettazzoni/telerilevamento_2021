@@ -40,3 +40,30 @@ library(rcompanion)
 cldList(P.adj ~ Comparison,
         data = Dunnx,  threshold = 0.05, Letters=letters,  
                 reversed = FALSE)
+
+
+
+
+
+
+#pca
+
+install.packages("corrr")
+library('corrr')
+
+install.packages("ggcorrplot")
+library(ggcorrplot)
+
+install.packages("FactoMineR")
+library("FactoMineR")
+
+data <- read.csv("ammcon.csv")
+str(data)
+colSums(is.na(data))
+
+data_num <- as.data.frame(apply(data, 2, as.numeric))  # Convert all variable types to numeric
+sapply(data_num, class)  
+
+numerical_data <- data_num[,1:1]
+
+head(numerical_data)
