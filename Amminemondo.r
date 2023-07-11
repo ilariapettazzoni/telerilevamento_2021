@@ -1,3 +1,5 @@
+#install.packages("devtools")
+library(devtools)
 library(tidyverse)  # data manipulation
 library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
@@ -7,12 +9,17 @@ setwd("/Users/ilari/Desktop/")
 #df <- USArrests
 #df <- read.csv("provaclusters.csv")
 df <- read.csv("provaclustersa.csv", header = T, sep=";", stringsAsFactors=F)
- 
+rownames(df) <- df$sam
+
+#df$sam<-as.factor(df$sam)
+#df$sam<-as.numeric(df$sam)
+str(df)
+
 #read.table(file.choose("provaclusters.csv"), header=T, sep=";")
  df <- na.omit(df)
 
-df <- scale(df)
-head(df)
+dfs <- scale(df[, -1])
+head(dfs)
 
 
 ##                Murder   Assault   UrbanPop         Rape
@@ -23,8 +30,8 @@ head(df)
 ## California 0.27826823 1.2628144  1.7589234  2.067820292
 ## Colorado   0.02571456 0.3988593  0.8608085  1.864967207
 
-distance <- get_dist(df)
-fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+distance <-dist(df)
+fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07")) #?????
 
 k2 <- kmeans(df, centers = 12, nstart = 1)
 str(k2)
@@ -89,17 +96,17 @@ fviz_cluster(k2, data = df)
 
 
 df %>%
-  as_tibble() %>%
-  mutate(cluster = k2$cluster,
-         state = row.names(USArrests)) %>%
-  ggplot(aes(UrbanPop, Murder, color = factor(cluster), label = state)) +
-  geom_text()
+  as.tibble() %>%
+  mutate(cluster = k2$sam,
+         state = row.names(sam) %>%
+  ggplot(aes(df, sam, color = factor(cluster), label = state)) +
+  geom.text()
   
   
   
   
   
-  k3 <- kmeans(df, centers = 3, nstart = 25)
+k3 <- kmeans(df, centers = 3, nstart = 25)
 k4 <- kmeans(df, centers = 4, nstart = 25)
 k5 <- kmeans(df, centers = 5, nstart = 25)
 
