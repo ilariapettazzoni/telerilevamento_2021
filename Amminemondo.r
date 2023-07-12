@@ -30,10 +30,10 @@ head(dfs)
 ## California 0.27826823 1.2628144  1.7589234  2.067820292
 ## Colorado   0.02571456 0.3988593  0.8608085  1.864967207
 
-distance <-dist(df)
+distance <-dist(dfs)
 fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07")) #?????
 
-k2 <- kmeans(df, centers = 12, nstart = 1)
+k2 <- kmeans(dfs, centers = 12, nstart = 1)
 str(k2)
 ## List of 9
 ##  $ cluster     : Named int [1:50] 1 1 1 2 1 1 2 2 1 1 ...
@@ -97,7 +97,7 @@ fviz_cluster(k2, data = df)
 
 df %>%
   as.tibble() %>%
-  mutate(cluster = k2$sam,
+  mutate(cluster = k2$put,
          state = row.names(sam) %>%
   ggplot(aes(df, sam, color = factor(cluster), label = state)) +
   geom.text()
