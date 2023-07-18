@@ -47,23 +47,26 @@ cldList(P.adj ~ Comparison,
 
 
 #pca
-
-install.packages("corrr")
+#install.packages("corrr")
 library('corrr')
 
-install.packages("ggcorrplot")
+#install.packages("ggcorrplot")
 library(ggcorrplot)
 
-install.packages("FactoMineR")
+#install.packages("FactoMineR")
 library("FactoMineR")
 
+setwd("/Users/ilari/Desktop/")
 data <- read.csv("ammcon.csv")
 str(data)
 colSums(is.na(data))
 
-data_num <- as.data.frame(apply(data, 2, as.numeric))  # Convert all variable types to numeric
+data_num <- as.factor(data)
 sapply(data_num, class)  
 
 numerical_data <- data_num[,1:1]
 
 head(numerical_data)
+
+data_normalized <- scale(numerical_data)
+head(data_normalized)
