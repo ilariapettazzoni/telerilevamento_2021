@@ -175,7 +175,8 @@ linear
  set.seed(123)
 
 
-#lda(Species ~ ., data = training)
+lda(States ~ ., data = training)
+         
 #Prior probabilities of groups:
 #    setosa versicolor  virginica
 # 0.3837209  0.3139535  0.3023256
@@ -212,12 +213,13 @@ ldahist(data = p$x[,2], g = training$States)
 par(mar=c(1,1,1,1))         
 ldahist(data = p$x[,3], g = training$States)
 
-ggord(linear, training$States, ylim = c(-10, 0))
+         
+ggord(linear, training$States, ylim = c(-20, 20))
 
 partimat(States~., data = training, method = "lda")
 
 
-partimat(Species~., data = training, method = "qda")
+partimat(States~., data = training, method = "qda")
 
 p1 <- predict(linear, training)$class
 tab <- table(Predicted = p1, Actual = training$Species)
