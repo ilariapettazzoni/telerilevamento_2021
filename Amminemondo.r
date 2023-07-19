@@ -122,3 +122,128 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 
 
+
+# LDA
+install.packages("klaR")
+install.packages("psych")
+install.packages("MASS")
+#install.packages("ggord")
+install.packages('devtools')
+devtools::install_github('fawda123/ggord')
+install.packages("devtools")
+
+library(klaR)
+library(psych)
+library(MASS)
+library(ggord)
+library(devtools)
+
+#data("iris")
+#str(iris)
+         
+setwd("/Users/ilari/Desktop/")
+df <- read.csv("provaclusters.csv", header = T, sep=";", stringsAsFactors=F)
+str(df)
+df$States<-as.factor(df$States)
+str(df)
+         
+
+#'data.frame':       150 obs. of  5 variables:
+# $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+# $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+# $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+# $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+# $ Species     : Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...
+
+
+
+
+ind <- sample(2, nrow(df),
+              replace = TRUE,
+              prob = c(0.6, 0.4))
+training <- df[ind==1,]
+testing <- df[ind==2,]
+
+
+linear <- lda(States~., training)
+linear
+
+ pairs.panels(df[2:4],
+             gap = 0,
+             bg = c("red", "green", "blue", "yellow", "orange", "black" )[df$States],
+             pch = 21)
+ set.seed(123)
+
+
+#lda(Species ~ ., data = training)
+#Prior probabilities of groups:
+#    setosa versicolor  virginica
+# 0.3837209  0.3139535  0.3023256
+
+         #Group means:
+ #          Sepal.Length Sepal.Width Petal.Length Petal.Width
+#setosa         4.975758    3.357576     1.472727   0.2454545
+#versicolor     5.974074    2.751852     4.281481   1.3407407
+#virginica      6.580769    2.946154     5.553846   1.9807692
+#Coefficients of linear discriminants:
+                   LD1        LD2
+#Sepal.Length  1.252207 -0.1229923
+#Sepal.Width   1.115823  2.2711963
+#Petal.Length -2.616277 -0.7924520
+#Petal.Width  -2.156489  2.6956343
+#The proportion of trace:
+#   LD1    LD2
+#0.9937 0.0063
+
+
+
+attributes(linear)
+#[1] "prior"   "counts"  "means"   "scaling" "lev"     "svd"     "N"       "call"    "terms" 
+#[10] "xlevels"
+#$class
+#[1] "lda"
+
+par(mar=c(1,1,1,1))
+p <- predict(linear, training)
+ldahist(data = p$x[,1], g = training$States)
+
+par(mar=c(1,1,1,1))
+ldahist(data = p$x[,2], g = training$States)
+par(mar=c(1,1,1,1))         
+ldahist(data = p$x[,3], g = training$States)
+
+ggord(linear, training$States, ylim = c(-10, 0))
+
+partimat(States~., data = training, method = "lda")
+
+
+partimat(Species~., data = training, method = "qda")
+
+p1 <- predict(linear, training)$class
+tab <- table(Predicted = p1, Actual = training$Species)
+tab
+
+
+#Actual
+#Predicted    setosa versicolor virginica
+#  setosa         33          0         0
+ # versicolor      0         26         1
+ # virginica       0          1        25
+
+sum(diag(tab))/sum(tab)
+
+
+p2 <- predict(linear, testing)$class
+tab1 <- table(Predicted = p2, Actual = testing$Species)
+tab1
+#Actual
+#Predicted    setosa versicolor virginica
+#  setosa         17          0         0
+# versicolor      0         22         0
+# virginica       0          1        24
+
+sum(diag(tab1))/sum(tab1)
+         
+
+
+
