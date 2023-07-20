@@ -303,8 +303,3 @@ fviz_pca_var(data.pca, col.var = "cos2",
             gradient.cols = c("black", "orange", "green"),
             repel = TRUE)
          
-library(ggfortify)
-
-pca_res <- prcomp(df, scale. = TRUE)
-
-autoplot(pca_res)
