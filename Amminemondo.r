@@ -296,9 +296,15 @@ data.pca$loadings[, 1:2]
 fviz_eig(data.pca, addlabels = TRUE)
 
 fviz_pca_var(data.pca, col.var = "black")   #???
+         
+fviz_cos2(data.pca, choice = "var", axes = 1:2)
 
-fviz_cos2(data.pca, choice = "var", axes = 1:2)   
-         fviz_pca_var(data.pca, col.var = "cos2",
+fviz_pca_var(data.pca, col.var = "cos2",
             gradient.cols = c("black", "orange", "green"),
             repel = TRUE)
          
+library(ggfortify)
+
+pca_res <- prcomp(df, scale. = TRUE)
+
+autoplot(pca_res)
