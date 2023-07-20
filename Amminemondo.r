@@ -249,3 +249,56 @@ sum(diag(tab1))/sum(tab1)
 
 
 
+
+
+
+
+#PCA
+#install.packages("corrr")
+library('corrr')
+
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+
+#install.packages("factoextra")
+library(factoextra)
+         
+#install.packages("FactoMineR")
+library(FactoMineR)
+
+
+p1 <- read.csv("provaclusters.csv", header = T, sep=";", stringsAsFactors=F)
+str(p1)
+df$States<-as.factor(df$States)
+str(p1)
+
+colSums(is.na(p1))
+
+numerical_data <- p1[,1:4]
+head(numerical_data)    
+
+data_normalized <- scale(numerical_data)
+head(data_normalized)        
+
+data.pca <- princomp(corr_matrix)
+summary(data.pca)
+         
+corr_matrix <- cor(data_normalized)
+ggcorrplot(corr_matrix)
+
+
+data.pca <- princomp(corr_matrix)
+summary(data.pca)
+
+
+data.pca$loadings[, 1:2]         
+
+fviz_eig(data.pca, addlabels = TRUE)
+
+fviz_pca_var(data.pca, col.var = "black")   #???
+
+fviz_cos2(data.pca, choice = "var", axes = 1:2)   
+         fviz_pca_var(data.pca, col.var = "cos2",
+            gradient.cols = c("black", "orange", "green"),
+            repel = TRUE)
+         
