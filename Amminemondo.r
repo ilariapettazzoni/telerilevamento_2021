@@ -254,19 +254,16 @@ sum(diag(tab1))/sum(tab1)
 
 
 #PCA
-#install.packages("corrr")
-library('corrr')
-
+#install.packages("corrr")      
 #install.packages("ggcorrplot")
-library(ggcorrplot)
-
-#install.packages("factoextra")
-library(factoextra)
-         
+#install.packages("factoextra")         
 #install.packages("FactoMineR")
-library(FactoMineR)
+library(corrr)
+library(ggcorrplot)
+library(factoextra)  
+library(FactoMineR)   
 
-
+setwd("/Users/ilari/Desktop/")
 p1 <- read.csv("provaclusters.csv", header = T, sep=";", stringsAsFactors=F)
 str(p1)
 df$States<-as.factor(df$States)
@@ -303,3 +300,35 @@ fviz_pca_var(data.pca, col.var = "cos2",
             gradient.cols = c("black", "orange", "green"),
             repel = TRUE)
          
+#plot 
+library(ggfortify)
+library(ggplot2)
+setwd("/Users/ilari/Desktop/")
+p1 <- read.csv("provaclusters.csv", header = T, sep=";", stringsAsFactors=F)
+str(p1)
+df$States<-as.factor(df$States)
+str(p1)
+p2 <- p1[, -5]
+head(p2)
+colSums(is.na(p2))
+
+p2_pca <- prcomp(p2, 
+                 scale=TRUE)
+ 
+summary(p2_pca)
+
+
+autoplot(p2_pca, 
+         colour="blue")    
+
+pca.plot <- autoplot(p2_pca,
+                          data = p1,
+                          colour = 'States')
+  
+pca.plot
+         
+biplot.pca <- biplot(p2_pca)
+biplot.pca
+
+plotg.pca <- plot(p2_pca, type="l")
+plotg.pca
