@@ -25,8 +25,8 @@ summary(res.aov)
 
 kruskal.test(weight ~ group, data = my_data)
 
-library(FSA)
-my_data <- read.table(file.choose("ammcon.csv"), header=T, sep=";")
+#library(FSA)
+#my_data <- read.table(file.choose("ammcon.csv"), header=T, sep=";")
 
 Dunn=dunnTest(pain ~ drug,
          data=my_data,
