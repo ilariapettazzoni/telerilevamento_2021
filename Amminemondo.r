@@ -417,3 +417,24 @@ $groups
 attr(,"class")
 [1] "group"
 > 
+
+
+
+
+
+
+
+
+        # 1 way anova
+         
+         
+mod=lm(ammine~state,data=x)
+mod
+m=tapply(x$ammine,x$state,mean)
+m[1]; m[2]-m[1]; m[3]-m[1]
+anova(mod)
+summary(mod)
+pairwise.t.test(x$ammine,x$state,p.adj="bonferroni") # t-test con correzione per test multipli secondo
+boxplot(x$ammine~x$state,xlab="state",ylab="ammine",col=heat.colors(3),las=1) # disegna boxplots (uno per gruppo) con adeguate labels e colori diversi;
+dev.copy2pdf(file="anova_statesboxplot.pdf")
+         
