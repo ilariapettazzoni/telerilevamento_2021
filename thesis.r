@@ -70,3 +70,14 @@ head(numerical_data)
 
 data_normalized <- scale(numerical_data)
 head(data_normalized)
+
+
+
+
+#1way anova
+df$sample<-as.factor(df$sample)
+ano<-aov(ammine~sample,data=df)
+TukeyHSD(ano, "sample")
+
+cld <- multcompLetters4(ano, Tukey)
+cld
