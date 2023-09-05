@@ -65,7 +65,7 @@ fligner.test(sum ~ sample, data=x)
 
 #____________
 #Test di Levene non parametrico per campioni NON NORMALI
-
+x$sample<-as.factor(x$sample)
 library(car)
 leveneTest(sum ~ sample, data = x)
 #Levene's Test for Homogeneity of Variance (center = median)
@@ -74,6 +74,21 @@ leveneTest(sum ~ sample, data = x)
 #      45                      
 #---
 #Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-> 
 
-  
+#Assessing Homogeneity of Variance in R
+library(onewaytests)
+homog.test(sum ~ sample, data = x, method = "Fligner")
+
+#___________1way anova omoschedas
+ano<-aov(sum~sample, data=x)
+x$sample<-as.factor(x$sample)
+Tukey<-TukeyHSD(ano, "sample")
+cld<-multcompLetters4(ano,Tukey, threshold = 0.05)
+cld
+#$sample
+# 459  615  358  907  738  671  563  736  431  616  524  322  332  727  613 
+# "a"  "a"  "a" "ab" "ab" "bc" "bc"  "c" "cd" "cd" "de" "de"  "e"  "e"  "e" 
+
+#anova eterosche
+
+
