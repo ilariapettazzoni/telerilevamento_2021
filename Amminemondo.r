@@ -437,4 +437,39 @@ summary(mod)
 pairwise.t.test(x$ammine,x$state,p.adj="bonferroni") # t-test con correzione per test multipli secondo
 boxplot(x$ammine~x$state,xlab="state",ylab="ammine",col=heat.colors(3),las=1) # disegna boxplots (uno per gruppo) con adeguate labels e colori diversi;
 dev.copy2pdf(file="anova_statesboxplot.pdf")
+
+
+
+
+
+
+
+
+
+        #////// 5/04/24
+  data=read.csv("Dati braz-mondo.csv", header=T, sep=";")
+ head(data)
+dfs=data[,-1]
+df=dfs[,-1]
+
+head(dfs)
+head(df)
+
+summary_stats <- summary(df) 
+print(summary_stats)         
+         
+# Visualization - Box plot without jitter
+library(ggplot2)
+
+ # Reshape data for plotting
+df_long <- tidyr::pivot_longer(df, cols = -Samples, names_to = "Compound", values_to = "Quantity")
+
+# Box plot 
+ggplot(df_long, aes(x = Compound, y = Quantity)) +
+  geom_boxplot() +
+  labs(title = "Box plot of Compound Quantities",
+       x = "Compound",
+       y = "Quantity")        
+plot(pca1$li[,1],pca1$li[,2], xlab="PC1",ylab="PC2",col=data$Sam)
+legend("topright", legend=unique(data$Sam), col=unique(data$Sam), pch=1)
          
