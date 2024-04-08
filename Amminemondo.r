@@ -449,8 +449,8 @@ dev.copy2pdf(file="anova_statesboxplot.pdf")
         #////// 5/04/24
   data=read.csv("Dati braz-mondo.csv", header=T, sep=";")
  head(data)
-dfs=data[,-1]
-df=dfs[,-1]
+dim(data)
+df=data[1:140,4:32]
 
 head(dfs)
 head(df)
@@ -473,3 +473,131 @@ ggplot(df_long, aes(x = Compound, y = Quantity)) +
 plot(pca1$li[,1],pca1$li[,2], xlab="PC1",ylab="PC2",col=data$Sam)
 legend("topright", legend=unique(data$Sam), col=unique(data$Sam), pch=1)
          
+#________________________DEFINITIVE ANALYSIS (AMINE, PHE, AA)
+
+#Descriptive Statistics:         
+library(ggplot2)  # For data visualization
+> 
+> # Assuming 'df' is your data frame containing compound quantities in different samples
+> 
+> # Calculate summary statistics for each compound
+> summary_stats <- apply(df, 2, function(x) c(Mean = mean(x), Median = median(x), SD = sd(x)))
+> print(summary_stats)
+
+# Visualize the distribution of compound quantities using histograms
+> # Iterate through each compound and create histograms
+par(mfrow = c(4, 4))  # Set layout to 2 rows and 2 columns
+> 
+> # Assuming 'df' is your data frame containing compound quantities in different samples
+> 
+> # Iterate through each compound and create histograms
+> for (compound in colnames(df)) {
++   hist(df[[compound]], main = paste("Histogram of", compound),
++        xlab = "Compound Quantity", col = "lightblue", border = "black")
++ }
+
+# Load required libraries
+> library(tidyr)  # For data manipulation
+> 
+> # Assuming 'df' is your data frame containing compound quantities in different samples
+> 
+> # Reshape data for box plot
+> df_long <- tidyr::pivot_longer(df,1:29, names_to = "Compound", values_to = "Quantity")
+> 
+> # Create box plot
+> ggplot(df_long, aes(x = Compound, y = Quantity)) +
++   geom_boxplot(fill = "lightblue", color = "black") +
++   labs(title = "Box plot of Compound Quantities",
++        x = "Compound",
++        y = "Quantity") +
++   theme_minimal()
+
+#Exploratory Data Analysis (EDA):
+# Correlation matrix
+ cor_matrix <- cor(df[, -1])  # Calculate correlation matrix
+corrplot(cor_matrix, method = "color", type = "lower", diag = FALSE, 
+         title = "Correlation Matrix of Compounds")  # Plot correlation matrix  
+
+
+                         
+data$Samples <- as.factor(data$Samples)
+
+# Compare compound quantities between '5.1a' and '5.1b' samples using t-test
+t_test_result <- t.test(Put ~ Samples, data = data)
+print(t_test_result)
+
+# Compare compound quantities among 'Samples' using ANOVA
+anova_result <- aov(Put ~ Samples, data = data)
+print(summary(anova_result))         
+
+ata$States <- as.factor(data$States)
+
+# Compare compound quantities between '5.1a' and '5.1b' samples using t-test
+t_test_result <- t.test(Put ~ States, data = data)
+print(t_test_result)
+
+# Compare compound quantities among 'Samples' using ANOVA
+anova_result <- aov(Put ~ States, data = data)
+print(summary(anova_result))    #significant difference!
+
+
+
+
+# List to store ANOVA results
+anova_results <- list()
+
+# Iterate over each compound column (excluding the first three columns)
+for (i in 4:ncol(data)) {
+  compound <- colnames(data)[i]  # Get the name of the current column
+  
+  # Perform ANOVA for the compound
+  anova_result <- aov(formula(paste(compound, "~ States")), data = data)
+  
+  # Extract relevant information from ANOVA summary
+  anova_summary <- summary(anova_result)
+  
+  # Store ANOVA result in the list
+  anova_results[[compound]] <- anova_summary
+}
+
+# Print ANOVA results to console
+for (compound in names(anova_results)) {
+  cat("ANOVA results for compound:", compound, "\n")
+  print(anova_results[[compound]])
+  cat("\n")
+}
+                       
+#all significant!!!!!BUT NOT NORMALLY DISTRIBUTED ATTENZIONE
+
+
+#PCA PLOT
+# Install and load the necessary packages
+install.packages("factoextra")
+library(factoextra)
+
+# Assuming you have already performed PCA and stored the results in pca_result
+
+# Plot PCA results for individual samples
+fviz_pca_ind(pca_result,
+             geom = "point", # Use points to represent samples
+             habillage = data$States, # Color samples based on states
+             palette = "jco", # Color palette
+             addEllipses = TRUE, # Add confidence ellipses
+             legend.title = "States", # Legend title
+             repel = TRUE # Avoid overlapping labels
+             )
+#save                         
+# Install and load the necessary packages
+library(ggplot2)
+
+# Save the plot
+ggsave("pca_plot.png", plot = fviz_pca_ind(pca_result,
+                                           geom = "point",
+                                           habillage = data$States,
+                                           palette = "jco",
+                                           addEllipses = TRUE,
+                                           legend.title = "States",
+                                           repel = TRUE),
+       width = 8, height = 6, dpi = 300)
+                         
+                         
