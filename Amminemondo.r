@@ -569,8 +569,40 @@ for (compound in names(anova_results)) {
                        
 #all significant!!!!!BUT NOT NORMALLY DISTRIBUTED ATTENZIONE
 
+#compositional data analysis_______________________
+drepl1=df[,1:8]
+drepl2=df[,9:29]
+detection_limit1 <- 0.01  # Set your detection limit here 
+>  # Replace censored values with a placeholder value (e.g., half the detection limit)
+>  drepl1[drepl1 < detection_limit1] <- detection_limit1 / 2
+>  # Split the data into predictors (X) and response (Y)
+>  X <- drepl1[, -c(1)]  # Exclude the response column
+>  Y <- drepl1[, 2:8]
+>  head(drepl1)
+   detection_limit2 <- 0.0001  # Set your detection limit here 
+>  # Replace censored values with a placeholder value (e.g., half the detection limit)
+>  drepl2[drepl2 < detection_limit2] <- detection_limit2 / 2
 
-#PCA PLOT
+>  # Split the data into predictors (X) and response (Y)
+>  X <- drepl2[, -c(1:4,6:29)]  # Exclude the response column
+>  Y <- drepl2[, 5]
+>  head(drepl2)           
+
+dftot=cbind (drepl1,drepl2)
+ 
+ 
+ # Convert the dataframe to a matrix
+ mat <- as.matrix(dftot)
+ 
+ # Perform CLR transformation
+ clr_transformed_data <- clr(mat + 1)  # Adding 1 to avoid issues with zeros
+ 
+ # Print the transformed data
+ clr_transformed_data
+                         
+                        
+                         
+                         #PCA PLOT
 # Install and load the necessary packages
 install.packages("factoextra")
 library(factoextra)
