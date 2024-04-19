@@ -447,8 +447,9 @@ dev.copy2pdf(file="anova_statesboxplot.pdf")
 
 
         #////// 5/04/24
-  data=read.csv("Dati braz-mondo.csv", header=T, sep=";")
- head(data)
+setwd("/Users/ilari/Desktop/")
+data=read.csv("Dati braz-mondo.csv", header=T, sep=";")
+head(data)
 dim(data)
 df=data[1:140,4:32]
 
@@ -592,6 +593,7 @@ dftot=cbind (drepl1,drepl2)
  
  
  # Convert the dataframe to a matrix
+ library(compositions)                       
  mat <- as.matrix(dftot)
  
  # Perform CLR transformation
@@ -608,7 +610,8 @@ install.packages("factoextra")
 library(factoextra)
 
 # Assuming you have already performed PCA and stored the results in pca_result
-
+pca_result <- prcomp(clr_transformed_data, 
+                 scale=TRUE)
 # Plot PCA results for individual samples
 fviz_pca_ind(pca_result,
              geom = "point", # Use points to represent samples
