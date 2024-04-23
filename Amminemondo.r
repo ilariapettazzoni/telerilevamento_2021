@@ -574,20 +574,20 @@ for (compound in names(anova_results)) {
 drepl1=df[,1:8]
 drepl2=df[,9:29]
 detection_limit1 <- 0.01  # Set your detection limit here 
->  # Replace censored values with a placeholder value (e.g., half the detection limit)
->  drepl1[drepl1 < detection_limit1] <- detection_limit1 / 2
->  # Split the data into predictors (X) and response (Y)
->  X <- drepl1[, -c(1)]  # Exclude the response column
->  Y <- drepl1[, 2:8]
->  head(drepl1)
+# Replace censored values with a placeholder value (e.g., half the detection limit)
+drepl1[drepl1 < detection_limit1] <- detection_limit1 / 2
+# Split the data into predictors (X) and response (Y)
+X <- drepl1[, -c(1)]  # Exclude the response column
+Y <- drepl1[, 2:8]
+head(drepl1)
    detection_limit2 <- 0.0001  # Set your detection limit here 
->  # Replace censored values with a placeholder value (e.g., half the detection limit)
->  drepl2[drepl2 < detection_limit2] <- detection_limit2 / 2
+# Replace censored values with a placeholder value (e.g., half the detection limit)
+drepl2[drepl2 < detection_limit2] <- detection_limit2 / 2
 
->  # Split the data into predictors (X) and response (Y)
->  X <- drepl2[, -c(1:4,6:29)]  # Exclude the response column
->  Y <- drepl2[, 5]
->  head(drepl2)           
+# Split the data into predictors (X) and response (Y)
+X <- drepl2[, -c(1:4,6:29)]  # Exclude the response column
+Y <- drepl2[, 5]
+head(drepl2)           
 
 dftot=cbind (drepl1,drepl2)
  
@@ -624,7 +624,17 @@ fviz_pca_ind(pca_result,
 #save                         
 # Install and load the necessary packages
 library(ggplot2)
+ library(factoextra)
 
+
+# Plot PCA loadings
+fviz_pca_var(pca_result,
+             col.var = "contrib", # Color by contribution to PCs
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), # Color gradient
+             repel = TRUE # Avoid overlapping labels
+             )
+# Save the plot
+ggsave("pca_loadings_plot.png", plot, width = 10, height = 8, units = "in")
 # Save the plot
 ggsave("pca_plot.png", plot = fviz_pca_ind(pca_result,
                                            geom = "point",
@@ -634,5 +644,12 @@ ggsave("pca_plot.png", plot = fviz_pca_ind(pca_result,
                                            legend.title = "States",
                                            repel = TRUE),
        width = 8, height = 6, dpi = 300)
-                         
+# Plot PCA loadings
+fviz_pca_var(pca_result,
+             col.var = "contrib", # Color by contribution to PCs
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), # Color gradient
+             repel = TRUE # Avoid overlapping labels
+             )
+# Save the plot
+ggsave("pca_loadings_plot.png", plot, width = 10, height = 8, units = "in")                         
                          
