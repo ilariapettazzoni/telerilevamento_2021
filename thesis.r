@@ -81,3 +81,51 @@ TukeyHSD(ano, "sample")
 
 cld <- multcompLetters4(ano, Tukey)
 cld
+
+
+
+
+
+
+
+kruskal <- kruskal.test(Met ~ Nomi, data = pi)
+print(kruskal)
+library(dunn.test)
+
+# Dunn's test with Bonferroni adjustment
+dunn_res <- dunn.test(pi$Met, pi$Nomi, method = "bonferroni")
+
+# Display the results
+print(dunn_res)
+library(rcompanion)
+
+# Convert Dunn’s test results into group letters
+group_letters <- cldList(dunn_res$P.adjusted, 
+                          comparison = dunn_res$comparisons, 
+                          threshold = 0.05)
+
+# Add group letters to the dataset
+group_letters <- data.frame(group_letters)
+print(group_letters)
+group_letters$compact_group <- cut(group_letters$Median, 
+                                    breaks = quantile(group_letters$Median, probs = seq(0, 1, by = 0.33)),
+                                    labels = c("a", "b", "c"))
+
+
+
+
+ano<-aov(Met~Nomi,data=pi)
+tukey_res <- HSD.test(ano, "Nomi", group = TRUE, alpha = 0.05)
+# Ensure that the variable is numeric
+tukey_res$groups$Met <- as.numeric(tukey_res$groups$Met)
+
+# Apply the cut function to create custom groupings
+tukey_res$groups$custom_group <- cut(
+  tukey_res$groups$Met, 
+  breaks = quantile(tukey_res$groups$Met, probs = seq(0, 1, length.out = 4), na.rm = TRUE), 
+  labels = c("a", "b", "c"), 
+  include.lowest = TRUE
+)
+
+# View the updated groups
+print(tukey_res$groups)
