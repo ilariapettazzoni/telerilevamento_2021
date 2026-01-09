@@ -79,6 +79,33 @@ leveneTest(sum ~ sample, data = x)
 library(onewaytests)
 homog.test(sum ~ sample, data = x, method = "Fligner")
 
+#____________KRUSKAL-WALLIS + POST-HOC DUNN
+library(rstatix)
+library(multcompView)
+
+# Kruskal-Wallis
+kw <- kruskal.test(sum ~ sample, data = x)
+cat("\n--- Kruskal-Wallis ---\n")
+print(kw)
+
+#___________ Dunn post-hoc con correzione BH
+dunn <- dunn_test(x, sum ~ sample, p.adjust.method = "BH")
+
+# Calcolo lettere di significatività
+pw <- dunn %>%
+  select(group1, group2, p.adj) %>%
+  mutate(comp = paste(group1, group2, sep = "-"))
+
+letters <- multcompLetters(setNames(pw$p.adj, pw$comp))$Letters
+
+cat("\n--- Lettere di significatività (CLD) ---\n")
+print(letters)
+
+
+
+
+
+
 #___________1way anova omoschedas
 ano<-aov(sum~sample, data=x)
 x$sample<-as.factor(x$sample)
@@ -89,6 +116,6 @@ cld
 # 459  615  358  907  738  671  563  736  431  616  524  322  332  727  613 
 # "a"  "a"  "a" "ab" "ab" "bc" "bc"  "c" "cd" "cd" "de" "de"  "e"  "e"  "e" 
 
-#anova eterosche
+
 
 
