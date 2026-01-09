@@ -1,0 +1,467 @@
+#UPLC DROUGHT
+
+install.packages(c("nortest", "car", "rstatix", "multcompView"))
+
+library(nortest)
+library(car)
+library(rstatix)
+library(multcompView)
+
+
+setwd("/Users/ilari/Desktop/")
+x <- read.csv("statuplcdrought.csv", sep = ";", stringsAsFactors = FALSE)
+
+x$groups <- factor(x$groups)
+
+vars <- c("Neoclorogenicacid",
+          "Chlorogenicacid",
+          "Cryptochlorogenicacid",
+          "Caffeine",
+          "Trigonelline",
+          "Catechine",
+          "Caffeicacid",
+          "Theobrobine",
+          "Resveratrol")
+cat("\nNORMALITÀ (Anderson–Darling)\n")
+
+normality_results <- data.frame()
+
+for(v in vars){
+  
+  ad <- ad.test(x[[v]])
+  
+  normality_results <- rbind(normality_results,
+                             data.frame(Variable = v,
+                                        A = ad$statistic,
+                                        p.value = ad$p.value))
+  
+  cat(v, ": p =", round(ad$p.value, 4), "\n")
+}
+
+
+cat("\nOMOGENEITÀ DELLE VARIANZE (Levene)\n")
+
+variance_results <- data.frame()
+
+for(v in vars){
+  
+  lev <- leveneTest(x[[v]] ~ x$groups)
+  
+  pval <- lev$`Pr(>F)`[1]
+  
+  variance_results <- rbind(variance_results,
+                            data.frame(Variable = v,
+                                       p.value = pval))
+  
+  cat(v, ": p =", round(pval, 4), "\n")
+}
+
+get_letters_only <- function(data, response, group){
+
+  dunn <- dunn_test(data,
+                    formula = as.formula(paste(response, "~", group)),
+                    p.adjust.method = "BH")
+
+  pw <- dunn %>%
+    select(group1, group2, p.adj) %>%
+    mutate(comp = paste(group1, group2, sep = "-"))
+
+  letters <- multcompLetters(
+    setNames(pw$p.adj, pw$comp)
+  )$Letters
+
+  return(letters)
+}
+
+
+cat("\nLETTERE DI SIGNIFICATIVITÀ (Kruskal + Dunn)\n")
+
+for(v in vars){
+  
+  cat("\n------------------------------\n")
+  cat(v, "\n")
+  cat("------------------------------\n")
+  
+  # Kruskal-Wallis
+  kw <- kruskal_test(x, formula = as.formula(paste(v, "~ groups")))
+  cat("Kruskal p =", round(kw$p, 4), "\n")
+  
+  # Lettere
+  letters <- get_letters_only(x, v, "groups")
+  
+  for(g in names(letters)){
+    cat(g, "=", letters[g], "\n")
+  }
+}
+
+#------------------------------
+#Neoclorogenicacid 
+#------------------------------
+#Kruskal p = 0.0121 
+#C0 = a 
+#C1 = abc 
+#C2 = bc 
+#C3 = ab 
+#S1 = abc 
+#S2 = c 
+#S3 = abc 
+
+#------------------------------
+#Chlorogenicacid 
+#------------------------------
+#Kruskal p = 0.0111 
+#C0 = a 
+#C1 = ab 
+#C2 = ab 
+#C3 = ab 
+#S1 = ab 
+#S2 = b 
+#S3 = ab 
+
+#------------------------------
+#Cryptochlorogenicacid 
+#------------------------------
+#Kruskal p = 0.0187 
+#C0 = a 
+#C1 = ab 
+#C2 = ab 
+#C3 = ab 
+#S1 = ab 
+#S2 = b 
+#S3 = ab 
+
+#------------------------------
+#Caffeine 
+#------------------------------
+#Kruskal p = 0.0689 
+#C0 = a 
+#C1 = a 
+#C2 = a 
+#C3 = a 
+#S1 = a 
+#S2 = a 
+#S3 = a 
+
+#------------------------------
+#Trigonelline 
+#------------------------------
+#Kruskal p = 0.0564 
+#C0 = ab 
+#C1 = ab 
+#C2 = ab 
+#C3 = a 
+#S1 = ab 
+#S2 = b 
+#S3 = ab 
+
+#------------------------------
+#Catechine 
+#------------------------------
+#Kruskal p = 0.331 
+#C0 = a 
+#C1 = a 
+#C2 = a 
+#C3 = a 
+#S1 = a 
+#S2 = a 
+#S3 = a 
+
+#------------------------------
+#Caffeicacid 
+#------------------------------
+#Kruskal p = 0.207 
+#C0 = a 
+#C1 = a 
+#C2 = a 
+#C3 = a 
+#S1 = a 
+#S2 = a 
+#S3 = a 
+
+#------------------------------
+#Theobrobine 
+#------------------------------
+#Kruskal p = 0.298 
+#C0 = a 
+#C1 = a 
+#C2 = a 
+#C3 = a 
+#S1 = a 
+#S2 = a 
+#S3 = a 
+
+#------------------------------
+#Resveratrol 
+#------------------------------
+#Kruskal p = 0.0406 
+#C0 = a 
+#C1 = a 
+#C2 = a 
+#C3 = a 
+#S1 = a 
+#S2 = a 
+#S3 = a 
+
+#--------------------------------------------------------------------------------------------
+#UPLC TEMP
+
+
+library(nortest)
+library(car)
+library(rstatix)
+library(multcompView)
+
+setwd("/Users/ilari/Desktop/")
+x <- read.csv("stsuplctemp.csv", sep = ";", stringsAsFactors = FALSE)
+
+# fattori
+x$t <- factor(x$t)   # temperatura
+x$h <- factor(x$h)   # tempo
+
+# rimuove colonne vuote
+x <- x[, !grepl("^X", names(x))]
+
+vars <- c("Neochlorogenicacid",
+          "Chlorogenicacid",
+          "Cryptochlorogenicacid",
+          "Caffeine",
+          "Trigonelline",
+          "Catechine",
+          "Caffeicacid",
+          "Theobromine",
+          "Resveratrol")
+check_assumptions <- function(data, response, group){
+  
+  ad <- ad.test(data[[response]])
+  lev <- leveneTest(data[[response]] ~ data[[group]])
+  
+  cat(response, "|", group, 
+      "| AD p =", round(ad$p.value,4),
+      "| Levene p =", round(lev$`Pr(>F)`[1],4), "\n")
+}
+get_letters_only <- function(data, response, group){
+
+  dunn <- dunn_test(data,
+                    formula = as.formula(paste(response, "~", group)),
+                    p.adjust.method = "BH")
+
+  pw <- dunn %>%
+    select(group1, group2, p.adj) %>%
+    mutate(comp = paste(group1, group2, sep = "-"))
+
+  letters <- multcompLetters(
+    setNames(pw$p.adj, pw$comp)
+  )$Letters
+
+  return(letters)
+}
+cat("\n==============================\n")
+cat("ANALISI PER TEMPERATURA (t)\n")
+cat("==============================\n")
+
+for(v in vars){
+  
+  cat("\n", v, "\n")
+  
+  check_assumptions(x, v, "t")
+  
+  kw <- kruskal_test(x, formula = as.formula(paste(v, "~ t")))
+  cat("Kruskal p =", round(kw$p,4), "\n")
+  
+  letters <- get_letters_only(x, v, "t")
+  
+  for(g in names(letters)){
+    cat("T", g, "=", letters[g], "\n")
+  }
+}
+
+#Neochlorogenicacid 
+#Neochlorogenicacid | t | AD p = 0.5336 | Levene p = 0.2317 
+#Kruskal p = 0.0829 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Chlorogenicacid 
+#Chlorogenicacid | t | AD p = 0.0881 | Levene p = 0.7803 
+#Kruskal p = 0.133 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Cryptochlorogenicacid 
+#Cryptochlorogenicacid | t | AD p = 0.8975 | Levene p = 0.1805 
+#Kruskal p = 0.0623 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Caffeine 
+#Caffeine | t | AD p = 0.447 | Levene p = 0.7301 
+#Kruskal p = 0.442 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Trigonelline 
+#Trigonelline | t | AD p = 0.8992 | Levene p = 0.0097 
+#Kruskal p = 0.97 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Catechine 
+#Catechine | t | AD p = 0 | Levene p = 7e-04 
+#Kruskal p = 0.604 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Caffeicacid 
+#Caffeicacid | t | AD p = 0.0122 | Levene p = 0.3233 
+#Kruskal p = 0.519 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Theobromine 
+#Theobromine | t | AD p = 0.0011 | Levene p = 0.2553 
+#Kruskal p = 0.801 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+# Resveratrol 
+#Resveratrol | t | AD p = 0.0027 | Levene p = 0.4622 
+#Kruskal p = 0.0817 
+#T 4 = a 
+#T 22 = a 
+#T 36 = a 
+
+
+cat("\n==============================\n")
+cat("ANALISI PER TEMPO (h)\n")
+cat("==============================\n")
+
+for(v in vars){
+  
+  cat("\n", v, "\n")
+  
+  check_assumptions(x, v, "h")
+  
+  kw <- kruskal_test(x, formula = as.formula(paste(v, "~ h")))
+  cat("Kruskal p =", round(kw$p,4), "\n")
+  
+  letters <- get_letters_only(x, v, "h")
+  
+  for(g in names(letters)){
+    cat("H", g, "=", letters[g], "\n")
+  }
+}
+
+# Neochlorogenicacid 
+#Neochlorogenicacid | h | AD p = 0.5336 | Levene p = 0.8024 
+#Kruskal p = 0.435 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Chlorogenicacid 
+#Chlorogenicacid | h | AD p = 0.0881 | Levene p = 0.7071 
+#Kruskal p = 0.14 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Cryptochlorogenicacid 
+#Cryptochlorogenicacid | h | AD p = 0.8975 | Levene p = 0.9947 
+#Kruskal p = 0.534 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Caffeine 
+#Caffeine | h | AD p = 0.447 | Levene p = 0.8336 
+#Kruskal p = 0.441 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Trigonelline 
+#Trigonelline | h | AD p = 0.8992 | Levene p = 0.4767 
+#Kruskal p = 0.31 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Catechine 
+#Catechine | h | AD p = 0 | Levene p = 0.51 
+#Kruskal p = 0.0517 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Caffeicacid 
+#Caffeicacid | h | AD p = 0.0122 | Levene p = 0.6716 
+#Kruskal p = 0.517 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Theobromine 
+#Theobromine | h | AD p = 0.0011 | Levene p = 0.3327 
+#Kruskal p = 0.114 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+# Resveratrol 
+#Resveratrol | h | AD p = 0.0027 | Levene p = 0.0546 
+#Kruskal p = 0.566 
+#H 0 = a 
+#H 1 = a 
+#H 2 = a 
+#H 4 = a 
+#H 8 = a 
+#H 12 = a 
+#H 24 = a 
+
+
+
+
+
+
+
+
